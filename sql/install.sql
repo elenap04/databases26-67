@@ -37,8 +37,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient` (
   `profession` VARCHAR(45) NULL,
   `nationality` VARCHAR(45) NOT NULL,
   `blood_type` VARCHAR(3) NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_patient_age` CHECK (age > 0 AND age < 130),
+  CONSTRAINT `chk_patient_sex` CHECK (sex IN('Male', 'Female', 'Other')),
+  CONSTRAINT `chk_patient_weight` CHECK (weight IS NULL OR weight > 0),
+  CONSTRAINT `chk_patient_height` CHECK (height IS NULL OR height > 0),
+  CONSTRAINT `chk_patient_email` CHECK (email IS NULL OR email LIKE '%@%.%'),
+  CONSTRAINT `chk_patient_blood_type` CHECK (blood_type IS NULL OR blood_type IN ('A+','A-','B+','B-','AB+','AB-','O+','O-'))
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `patient_amka_UNIQUE` ON `Ygeiopolis_db`.`patient` (`patient_amka` ASC) VISIBLE;
 
@@ -57,8 +64,12 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff` (
   `email` VARCHAR(100) NOT NULL,
   `hire_date` DATE NOT NULL,
   `staff_type` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_staff_age` CHECK (age > 0 AND age < 130),
+  CONSTRAINT `chk_staff_email` CHECK (email LIKE '%@%.%'),
+  CONSTRAINT `chk_staff_type` CHECK (staff_type IN('Doctor', 'Nurse', 'Administration'))
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `staff_amka_UNIQUE` ON `Ygeiopolis_db`.`staff` (`staff_amka` ASC) VISIBLE;
 
@@ -80,8 +91,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`contact_person` (
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_contact_person_relation` CHECK (relation IN ('Spouse', 'Parent', 'Child', 'Sibling', 'Friend', 'Other'))
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_contact_person_patient_idx` ON `Ygeiopolis_db`.`contact_person` (`patient_id` ASC) VISIBLE;
 
@@ -94,8 +107,9 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`doc_grade` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doc_grade` (
   `id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  CONSTRAINT `chk_doctor_grade` CHECK (name IN ('Resident', 'Junior Attending', 'Senior Attending', 'Director'))
+)ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`doc_grade` (`name` ASC) VISIBLE;
 
@@ -108,8 +122,8 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`doc_spec` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doc_spec` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`)
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`doc_spec` (`name` ASC) VISIBLE;
 
@@ -145,9 +159,11 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doctor` (
     FOREIGN KEY (`doc_spec_id`)
     REFERENCES `Ygeiopolis_db`.`doc_spec` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-COMMENT = '	';
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `supervisor_of_myself` CHECK (supervisor_id IS NULL OR supervisor_id <> id)
+  )ENGINE = InnoDB
+   COMMENT = '	';
 
 CREATE INDEX `supervisor_id_idx` ON `Ygeiopolis_db`.`doctor` (`supervisor_id` ASC) VISIBLE;
 
@@ -176,8 +192,11 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`department` (
     FOREIGN KEY (`doctor_id`)
     REFERENCES `Ygeiopolis_db`.`doctor` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_beds_no` CHECK (beds_no > 0),
+  CONSTRAINT `chk_floor` CHECK (floor > -4 AND floor < 21)
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_department_doctor1_idx` ON `Ygeiopolis_db`.`department` (`doctor_id` ASC) VISIBLE;
 
@@ -192,8 +211,10 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`nurse_grade` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`nurse_grade` (
   `id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_nurse_grade` CHECK (name IN('Nursing Assistant', 'Nurse', 'Head Nurse'))
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`nurse_grade` (`name` ASC) VISIBLE;
 
@@ -258,8 +279,11 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`triage_entry` (
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_triage_urg_level` CHECK (urg_level BETWEEN 1 AND 5),
+  CONSTRAINT `chk_triage_service_time` CHECK (service_time IS NULL OR service_time >= arrival_time)
+    )ENGINE = InnoDB;
 
 CREATE INDEX `fk_triage_entry_department1_idx` ON `Ygeiopolis_db`.`triage_entry` (`department_id` ASC) VISIBLE;
 
@@ -283,8 +307,11 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`bed` (
     FOREIGN KEY (`dept_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_bed_type` CHECK (type IN ('ICU', 'Single', 'Multi')),
+  CONSTRAINT `chk_bed_status` CHECK (status IN ('Available', 'Occupied', 'Under Maintenance'))
+  )ENGINE = InnoDB;
 
 CREATE INDEX `dept_id_idx` ON `Ygeiopolis_db`.`bed` (`dept_id` ASC) VISIBLE;
 
@@ -318,8 +345,12 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`hospitalization` (
     FOREIGN KEY (`bed_no` , `bed_dept_id`)
     REFERENCES `Ygeiopolis_db`.`bed` (`no` , `dept_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_discharge_date` CHECK (discharge_date IS NULL OR discharge_date > admission_date),
+  CONSTRAINT `chk_hospitalization_cost` CHECK (total_cost IS NULL OR total_cost >= 0)
+    
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_hospitalization_triage_entry1_idx` ON `Ygeiopolis_db`.`hospitalization` (`triage_entry_id` ASC) VISIBLE;
 
@@ -338,8 +369,8 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`clinical_room` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`clinical_room` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`)
+)ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -391,8 +422,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`lab_exam` (
     FOREIGN KEY (`mp_entryB_code`)
     REFERENCES `Ygeiopolis_db`.`mp_entryB` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_lab_exam_cost` CHECK (cost >= 0)
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_lab_exam_clinical_room1_idx` ON `Ygeiopolis_db`.`lab_exam` (`clinical_room_id` ASC) VISIBLE;
 
@@ -413,8 +446,12 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`KEN` (
   `base_cost` DECIMAL(10,2) NOT NULL,
   `mdh` SMALLINT(5) UNSIGNED NOT NULL,
   `daily_extra_charge` DECIMAL(10,2) UNSIGNED NOT NULL,
-  PRIMARY KEY (`code`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`code`),
+
+  CONSTRAINT `chk_ken_base_cost` CHECK (base_cost >= 0),
+  CONSTRAINT `chk_ken_mdh` CHECK (mdh >= 0),
+  CONSTRAINT `chk_ken_daily_extra` CHECK (daily_extra_charge >= 0)
+)ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -426,8 +463,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`insurance_provider` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `type` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_insurance_type` CHECK (type IN ('Public', 'Private'))
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`insurance_provider` (`name` ASC) VISIBLE;
 
@@ -444,8 +483,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`medication` (
   `mark_auth_holder` VARCHAR(100) NOT NULL,
   `master_file_loc` VARCHAR(200) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_medication_email` CHECK (email LIKE '%@%.%')
+  )ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -462,6 +503,7 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`prescription` (
   `patient_id` INT UNSIGNED NOT NULL,
   `doctor_id` INT UNSIGNED NOT NULL,
   `medication_id` INT UNSIGNED NOT NULL,
+  `hospitalization_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_prescription_patient1`
     FOREIGN KEY (`patient_id`)
@@ -477,6 +519,11 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`prescription` (
     FOREIGN KEY (`medication_id`)
     REFERENCES `Ygeiopolis_db`.`medication` (`id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_prescription_hospitalization1`
+    FOREIGN KEY (`hospitalization_id`)
+    REFERENCES `Ygeiopolis_db`.`hospitalization` (`id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -488,6 +535,7 @@ CREATE INDEX `fk_prescription_medication1_idx` ON `Ygeiopolis_db`.`prescription`
 
 CREATE UNIQUE INDEX `prescription` ON `Ygeiopolis_db`.`prescription` (`medication_id` ASC, `patient_id` ASC, `doctor_id` ASC, `pres_day` ASC) VISIBLE;
 
+CREATE INDEX `fk_prescription_hospitalization1_idx` ON `Ygeiopolis_db`.`prescription` (`hospitalization_id` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `Ygeiopolis_db`.`active_substance`
@@ -512,8 +560,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`operating_room` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(45) NOT NULL,
   `status` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`id`),
+  
+  CONSTRAINT `chk_operating_room_status` CHECK (status IN ('Available', 'Occupied', 'Under Maintenance'))
+  )ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -524,8 +574,8 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`mp_entryA` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`mp_entryA` (
   `code` VARCHAR(20) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`code`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`code`)
+)ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `code_UNIQUE` ON `Ygeiopolis_db`.`mp_entryA` (`code` ASC) VISIBLE;
 
@@ -538,7 +588,7 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`surgery` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`surgery` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `category` VARCHAR(45) NOT NULL,
-  `duration` SMALLINT(5) UNSIGNED NULL,
+  `duration` SMALLINT(5) UNSIGNED NOT NULL,
   `cost` DECIMAL(10,2) NOT NULL,
   `hospitalization_id` INT UNSIGNED NOT NULL,
   `operating_room_id` INT UNSIGNED NOT NULL,
@@ -565,8 +615,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`surgery` (
     FOREIGN KEY (`mp_entryA_code`)
     REFERENCES `Ygeiopolis_db`.`mp_entryA` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_surgery_category` CHECK (category = 'Surgical')
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_surgery_hospitalization1_idx` ON `Ygeiopolis_db`.`surgery` (`hospitalization_id` ASC) VISIBLE;
 
@@ -595,8 +647,14 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`evaluation` (
     FOREIGN KEY (`hospitalization_id`)
     REFERENCES `Ygeiopolis_db`.`hospitalization` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_eval_qual_med_care` CHECK (qual_med_care BETWEEN 1 AND 5),
+  CONSTRAINT `chk_eval_qual_nurse_care` CHECK (qual_nurse_care BETWEEN 1 AND 5),
+  CONSTRAINT `chk_eval_cleanness` CHECK (cleanness BETWEEN 1 AND 5),
+  CONSTRAINT `chk_eval_food` CHECK (food BETWEEN 1 AND 5),
+  CONSTRAINT `chk_eval_tot_experience` CHECK (tot_experience BETWEEN 1 AND 5)
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_evaluation_hospitalization1_idx` ON `Ygeiopolis_db`.`evaluation` (`hospitalization_id` ASC) VISIBLE;
 
@@ -631,8 +689,12 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`med_proc` (
     FOREIGN KEY (`mp_entryA_code`)
     REFERENCES `Ygeiopolis_db`.`mp_entryA` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_med_proc_cost` CHECK (cost >= 0),
+  CONSTRAINT `chk_med_proc_duration` CHECK (duration IS NULL OR duration > 0),
+  CONSTRAINT `chk_med_proc_category` CHECK (category IN ('Diagnostic', 'Therapeutic'))
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_examination_clinical_room1_idx` ON `Ygeiopolis_db`.`med_proc` (`clinical_room_id` ASC) VISIBLE;
 
@@ -673,8 +735,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`admin_staff` (
     FOREIGN KEY (`department_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+  )ENGINE = InnoDB;
 
 CREATE INDEX `fk_admin_staff_department1_idx` ON `Ygeiopolis_db`.`admin_staff` (`department_id` ASC) VISIBLE;
 
@@ -687,17 +749,21 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`shift` ;
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`shift` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `dept_id` INT UNSIGNED NOT NULL,
-  `start_time` TIME NOT NULL,
-  `end_time` TIME NOT NULL,
-  `date` DATE NOT NULL,
+  `start_time` DATETIME NOT NULL,
+  `end_time` DATETIME NOT NULL,
   `type` VARCHAR(45) NOT NULL,
+  `is_finalized` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_shift_dept`
     FOREIGN KEY (`dept_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_shift_type` CHECK (type IN ('Morning', 'Afternoon', 'Night')),
+  CONSTRAINT `chk_shift_is_finalized` CHECK (is_finalized IN (0, 1)),
+  CONSTRAINT `chk_shift_times` CHECK (end_time > start_time)
+  )ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -766,8 +832,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`bed_img` (
     FOREIGN KEY (`bed_no` , `dept_id`)
     REFERENCES `Ygeiopolis_db`.`bed` (`no` , `dept_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+  )ENGINE = InnoDB;
 
 CREATE INDEX `bed_id_idx` ON `Ygeiopolis_db`.`bed_img` (`bed_no` ASC, `dept_id` ASC) VISIBLE;
 
@@ -788,8 +854,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`dept_img` (
     FOREIGN KEY (`dept_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`dept_img` (`image_url` ASC) VISIBLE;
 
@@ -808,8 +874,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`op_room_img` (
     FOREIGN KEY (`op_room_id`)
     REFERENCES `Ygeiopolis_db`.`operating_room` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+  )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`op_room_img` (`image_url` ASC) VISIBLE;
 
@@ -865,8 +931,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient_img` (
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`patient_img` (`image_url` ASC) VISIBLE;
 
@@ -885,8 +951,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_img` (
     FOREIGN KEY (`staff_id`)
     REFERENCES `Ygeiopolis_db`.`staff` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    )ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`staff_img` (`image_url` ASC) VISIBLE;
 
@@ -1168,7 +1234,7 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doctor_shift` (
   CONSTRAINT `fk_doctor_shift_shift1`
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE 
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -1192,7 +1258,7 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`nurse_shift` (
   CONSTRAINT `fk_nurse_shift_shift1`
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -1216,7 +1282,7 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`admin_shift` (
   CONSTRAINT `fk_admin_shift_shift1`
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -1225,6 +1291,2047 @@ CREATE INDEX `fk_admin_shift_admin_staff1_idx` ON `Ygeiopolis_db`.`admin_shift` 
 CREATE INDEX `fk_admin_shift_shift1_idx` ON `Ygeiopolis_db`.`admin_shift` (`shift_id` ASC) VISIBLE;
 
 
+-- -----------------------------------------------------
+-- Table `Ygeiopolis_db`.`staff_absence`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Ygeiopolis_db`.`staff_absence` ;
+
+CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_absence` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `start_time` DATETIME NOT NULL,
+  `end_time` DATETIME NULL,
+  `staff_id` INT UNSIGNED NOT NULL,
+  `reason` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_staff_absence_staff1`
+    FOREIGN KEY (`staff_id`)
+    REFERENCES `Ygeiopolis_db`.`staff` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+    
+  CONSTRAINT `chk_absence_dates` CHECK (end_time IS NULL OR end_time > start_time),
+  CONSTRAINT `chk_absence_reason` CHECK (reason IN ('Annual Leave', 'Sick Leave', 'Other', 'Permanent Leave'))
+  )ENGINE = InnoDB;
+
+CREATE INDEX `fk_staff_absence_staff1_idx` ON `Ygeiopolis_db`.`staff_absence` (`staff_id` ASC) VISIBLE;
+
+-- -----------------------------------------------------
+-- Table `Ygeiopolis_db`.`staff_tel`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Ygeiopolis_db`.`staff_tel` ;
+
+CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_tel` (
+  `tel_no` VARCHAR(15) NOT NULL,
+  `staff_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`tel_no`, `staff_id`),
+  CONSTRAINT `fk_staff_tel_staff1`
+    FOREIGN KEY (`staff_id`)
+    REFERENCES `Ygeiopolis_db`.`staff` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- ==============================================
+-- INDEXES
+-- ==============================================
+
+CREATE INDEX idx_hosp_bed_time
+ON hospitalization (bed_no, bed_dept_id, admission_date, discharge_date);
+
+CREATE UNIQUE INDEX uq_shift_dept_day_type 
+ON shift (dept_id, DATE(start_time), type);
+
+CREATE INDEX idx_exam_doc_doctor_medproc
+ON exam_doc (doctor_id, med_proc_id);
+
+CREATE INDEX idx_lab_exam_doctor_hosp
+ON lab_exam (doctor_id, hospitalization_id);
+
+CREATE INDEX idx_surgery_doctor_hosp
+ON surgery (doctor_id, hospitalization_id);
+
+-- ==============================================
+-- TRIGGERS
+-- ==============================================
+
+-- staff hire_date
+
+DELIMITER $$
+CREATE TRIGGER trg_staff_hire_date
+BEFORE INSERT ON staff
+FOR EACH ROW
+BEGIN
+    IF NEW.hire_date > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Hire date cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+
+-- doctor
+-- staff_type of corresponding staff must be Doctor
+-- if doc_grade is resident, then a supervisor is required
+-- if doc_grade is director, then there mustn't be a supervisor
+-- if there is a supervisor, they must be a doctor
+-- full cycle detection
+
+DELIMITER $$
+
+CREATE PROCEDURE validate_doctor_data (
+    IN p_id INT UNSIGNED,
+    IN p_supervisor_id INT UNSIGNED,
+    IN p_doc_grade_id INT UNSIGNED
+)
+BEGIN
+    DECLARE v_staff_type VARCHAR(45);
+    DECLARE v_grade_name VARCHAR(45);
+    DECLARE v_supervisor_exists INT DEFAULT 0;
+    DECLARE v_current_supervisor INT UNSIGNED;
+    DECLARE v_next_supervisor INT UNSIGNED;
+    DECLARE v_counter INT DEFAULT 0;
+
+    SELECT s.staff_type
+    INTO v_staff_type
+    FROM staff s
+    WHERE s.id = p_id;
+
+    IF v_staff_type <> 'Doctor' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor validation failed: staff_type must be Doctor.';
+    END IF;
+
+    SELECT dg.name
+    INTO v_grade_name
+    FROM doc_grade dg
+    WHERE dg.id = p_doc_grade_id;
+
+    IF v_grade_name = 'Resident' AND p_supervisor_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor validation failed: Resident must have a supervisor.';
+    END IF;
+
+    IF v_grade_name = 'Director' AND p_supervisor_id IS NOT NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor validation failed: Director cannot have a supervisor.';
+    END IF;
+
+    IF p_supervisor_id IS NOT NULL THEN
+        SELECT COUNT(*)
+        INTO v_supervisor_exists
+        FROM doctor d
+        WHERE d.id = p_supervisor_id;
+
+        IF v_supervisor_exists = 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Doctor validation failed: supervisor_id must reference an existing doctor.';
+        END IF;
+
+        SET v_counter = 0;
+        SET v_current_supervisor = p_supervisor_id;
+
+        WHILE v_current_supervisor IS NOT NULL DO
+
+            IF v_current_supervisor = p_id THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Doctor validation failed: cyclic supervision chain is not allowed.';
+            END IF;
+
+            SELECT d.supervisor_id
+            INTO v_next_supervisor
+            FROM doctor d
+            WHERE d.id = v_current_supervisor;
+
+            SET v_current_supervisor = v_next_supervisor;
+            SET v_counter = v_counter + 1;
+
+            IF v_counter > 1000 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Doctor validation failed: supervision chain too deep or invalid.';
+            END IF;
+
+        END WHILE;
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER trg_doctor_before_insert
+BEFORE INSERT ON doctor
+FOR EACH ROW
+BEGIN
+    CALL validate_doctor_data(
+        NEW.id,
+        NEW.supervisor_id,
+        NEW.doc_grade_id
+    );
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER trg_doctor_before_update
+BEFORE UPDATE ON doctor
+FOR EACH ROW
+BEGIN
+    CALL validate_doctor_data(
+        NEW.id,
+        NEW.supervisor_id,
+        NEW.doc_grade_id
+    );
+END$$
+
+DELIMITER ;
+
+-- cannot change staff_type from Doctor while row exists in doctor table
+
+DELIMITER $$
+
+CREATE TRIGGER trg_staff_before_update_doctor_type_guard
+BEFORE UPDATE ON staff
+FOR EACH ROW
+BEGIN
+    DECLARE v_exists_in_doctor INT DEFAULT 0;
+
+    IF OLD.staff_type = 'Doctor' AND NEW.staff_type <> 'Doctor' THEN
+
+        SELECT COUNT(*)
+        INTO v_exists_in_doctor
+        FROM doctor d
+        WHERE d.id = NEW.id;
+
+        IF v_exists_in_doctor > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Staff update failed: cannot change staff_type from Doctor while row exists in doctor table.';
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- nurse
+-- staff_type of corresponding staff must be Nurse
+
+DELIMITER $$
+
+CREATE TRIGGER trg_nurse_before_insert
+BEFORE INSERT ON nurse
+FOR EACH ROW
+BEGIN
+    DECLARE v_staff_type VARCHAR(45);
+
+    SELECT s.staff_type
+    INTO v_staff_type
+    FROM staff s
+    WHERE s.id = NEW.id;
+
+    IF v_staff_type <> 'Nurse' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nurse insert failed: staff_type must be Nurse.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER trg_nurse_before_update
+BEFORE UPDATE ON nurse
+FOR EACH ROW
+BEGIN
+    DECLARE v_staff_type VARCHAR(45);
+
+    SELECT s.staff_type
+    INTO v_staff_type
+    FROM staff s
+    WHERE s.id = NEW.id;
+
+    IF v_staff_type <> 'Nurse' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nurse update failed: staff_type must be Nurse.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- cannot change staff_type from nurse while row exists in nurse table
+
+DELIMITER $$
+
+CREATE TRIGGER trg_staff_before_update_nurse_type_guard
+BEFORE UPDATE ON staff
+FOR EACH ROW
+BEGIN
+    DECLARE v_exists_in_nurse INT DEFAULT 0;
+
+    IF OLD.staff_type = 'Nurse' AND NEW.staff_type <> 'Nurse' THEN
+
+        SELECT COUNT(*)
+        INTO v_exists_in_nurse
+        FROM nurse n
+        WHERE n.id = NEW.id;
+
+        IF v_exists_in_nurse > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Staff update failed: cannot change staff_type from Nurse while row exists in nurse table.';
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- admin
+-- staff_type of corresponding staff must be Administration
+
+DELIMITER $$
+
+CREATE TRIGGER trg_admin_staff_before_insert
+BEFORE INSERT ON admin_staff
+FOR EACH ROW
+BEGIN
+    DECLARE v_staff_type VARCHAR(45);
+
+    SELECT s.staff_type
+    INTO v_staff_type
+    FROM staff s
+    WHERE s.id = NEW.id;
+
+    IF v_staff_type <> 'Administration' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin staff insert failed: staff_type must be Administration.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER trg_admin_staff_before_update
+BEFORE UPDATE ON admin_staff
+FOR EACH ROW
+BEGIN
+    DECLARE v_staff_type VARCHAR(45);
+
+    SELECT s.staff_type
+    INTO v_staff_type
+    FROM staff s
+    WHERE s.id = NEW.id;
+
+    IF v_staff_type <> 'Administration' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin staff update failed: staff_type must be Administration.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- cannot change staff_type from admin while row exists in admin_staff table
+
+DELIMITER $$
+
+CREATE TRIGGER trg_staff_before_update_admin_type_guard
+BEFORE UPDATE ON staff
+FOR EACH ROW
+BEGIN
+    DECLARE v_exists_in_admin INT DEFAULT 0;
+
+    IF OLD.staff_type = 'Administration' AND NEW.staff_type <> 'Administration' THEN
+
+        SELECT COUNT(*)
+        INTO v_exists_in_admin
+        FROM admin_staff a
+        WHERE a.id = NEW.id;
+
+        IF v_exists_in_admin > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Staff update failed: cannot change staff_type from Administration while row exists in admin_staff table.';
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- triage arrival_time
+DELIMITER $$
+CREATE TRIGGER trg_triage_arrival_time
+BEFORE INSERT ON triage_entry
+FOR EACH ROW
+BEGIN
+    IF NEW.arrival_time > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Arrival time cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- hospitalization admission_date
+
+DELIMITER $$
+CREATE TRIGGER trg_hospitalization_admission_date
+BEFORE INSERT ON hospitalization
+FOR EACH ROW
+BEGIN
+    IF NEW.admission_date > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admission date cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- lab exam date
+
+DELIMITER $$
+CREATE TRIGGER trg_lab_exam_date
+BEFORE INSERT ON lab_exam
+FOR EACH ROW
+BEGIN
+    IF NEW.date > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Lab exam date cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- prescription date
+
+DELIMITER $$
+CREATE TRIGGER trg_prescription_pres_day
+BEFORE INSERT ON prescription
+FOR EACH ROW
+BEGIN
+    IF NEW.pres_day > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prescription date cannot be in the future';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- hospitalization can be evaluated only when completed
+
+DELIMITER $$
+CREATE TRIGGER trg_evaluation_discharged
+BEFORE INSERT ON evaluation
+FOR EACH ROW
+BEGIN
+    DECLARE v_discharge DATETIME;
+
+    SELECT discharge_date INTO v_discharge
+    FROM hospitalization
+    WHERE id = NEW.hospitalization_id;
+
+    IF v_discharge IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot evaluate: hospitalization is not yet completed';
+    END IF;
+END$$
+DELIMITER ;
+
+
+-- shift constraints for staff
+-- monthly limits
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_nurse_shift_dept_check $$
+CREATE TRIGGER trg_nurse_shift_dept_check
+BEFORE INSERT ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_dept  INT UNSIGNED;
+    DECLARE v_nurse_dept  INT UNSIGNED;
+
+    SELECT dept_id INTO v_shift_dept
+    FROM shift WHERE id = NEW.shift_id;
+
+    SELECT department_id INTO v_nurse_dept
+    FROM nurse WHERE id = NEW.nurse_id;
+
+    IF v_nurse_dept <> v_shift_dept THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nurse does not belong to the shift department';
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_admin_shift_dept_check $$
+CREATE TRIGGER trg_admin_shift_dept_check
+BEFORE INSERT ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_dept INT UNSIGNED;
+    DECLARE v_admin_dept INT UNSIGNED;
+
+    SELECT dept_id INTO v_shift_dept
+    FROM shift WHERE id = NEW.shift_id;
+
+    SELECT department_id INTO v_admin_dept
+    FROM admin_staff WHERE id = NEW.admin_staff_id;
+
+    IF v_admin_dept <> v_shift_dept THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin staff does not belong to the shift department';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_doctor_shift_dept_check $$
+CREATE TRIGGER trg_doctor_shift_dept_check
+BEFORE INSERT ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_dept INT UNSIGNED;
+
+    SELECT dept_id INTO v_shift_dept
+    FROM shift WHERE id = NEW.shift_id;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM doc_belongs
+        WHERE doctor_id    = NEW.doctor_id
+          AND department_id = v_shift_dept
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor does not belong to the shift department';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_doctor_shift_monthly_limit $$
+CREATE TRIGGER trg_doctor_shift_monthly_limit
+BEFORE INSERT ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_count       INT;
+    DECLARE v_shift_date  DATE;
+    DECLARE v_shift_start DATETIME;
+    DECLARE v_shift_end   DATETIME;
+
+    -- Get shift date, start and end
+    SELECT DATE(start_time), start_time, end_time
+    INTO v_shift_date, v_shift_start, v_shift_end
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    -- Max 15 shifts/month for each doctor
+    SELECT COUNT(*) INTO v_count
+    FROM doctor_shift ds
+    JOIN shift s ON ds.shift_id = s.id
+    WHERE ds.doctor_id                = NEW.doctor_id
+      AND YEAR(DATE(s.start_time))  = YEAR(v_shift_date)
+      AND MONTH(DATE(s.start_time)) = MONTH(v_shift_date);
+
+    IF v_count >= 15 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor exceeds maximum 15 shifts per month';
+    END IF;
+
+    -- Doctor must not be absent during this shift
+    IF EXISTS (
+        SELECT 1 FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time < v_shift_end
+          AND (sa.end_time IS NULL OR sa.end_time > v_shift_start)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign shift: doctor was absent during this period';
+    END IF;
+
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_nurse_shift_monthly_limit $$
+CREATE TRIGGER trg_nurse_shift_monthly_limit
+BEFORE INSERT ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_count       INT;
+    DECLARE v_shift_date  DATE;
+    DECLARE v_shift_start DATETIME;
+    DECLARE v_shift_end   DATETIME;
+
+    -- Get shift date, start and end
+    SELECT DATE(start_time), start_time, end_time
+    INTO v_shift_date, v_shift_start, v_shift_end
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    -- Max 20 shifts/month for each nurse
+    SELECT COUNT(*) INTO v_count
+    FROM nurse_shift ns
+    JOIN shift s ON ns.shift_id = s.id
+    WHERE ns.nurse_id                 = NEW.nurse_id
+      AND YEAR(DATE(s.start_time))  = YEAR(v_shift_date)
+      AND MONTH(DATE(s.start_time)) = MONTH(v_shift_date);
+
+    IF v_count >= 20 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nurse exceeds maximum 20 shifts per month';
+    END IF;
+
+    -- Nurse must not be absent during this shift
+    IF EXISTS (
+        SELECT 1 FROM staff_absence sa
+        WHERE sa.staff_id = NEW.nurse_id
+          AND sa.start_time < v_shift_end
+          AND (sa.end_time IS NULL OR sa.end_time > v_shift_start)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign shift: nurse was absent during this period';
+    END IF;
+
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_admin_shift_monthly_limit $$
+CREATE TRIGGER trg_admin_shift_monthly_limit
+BEFORE INSERT ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_count       INT;
+    DECLARE v_shift_date  DATE;
+    DECLARE v_shift_start DATETIME;
+    DECLARE v_shift_end   DATETIME;
+
+    -- Get shift date, start and end
+    SELECT DATE(start_time), start_time, end_time
+    INTO v_shift_date, v_shift_start, v_shift_end
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    -- Max 25 shifts/month for each admin staff
+    SELECT COUNT(*) INTO v_count
+    FROM admin_shift as2
+    JOIN shift s ON as2.shift_id = s.id
+    WHERE as2.admin_staff_id          = NEW.admin_staff_id
+      AND YEAR(DATE(s.start_time))  = YEAR(v_shift_date)
+      AND MONTH(DATE(s.start_time)) = MONTH(v_shift_date);
+
+    IF v_count >= 25 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin staff exceeds maximum 25 shifts per month';
+    END IF;
+
+    -- Admin staff must not be absent during this shift
+    IF EXISTS (
+        SELECT 1 FROM staff_absence sa
+        WHERE sa.staff_id = NEW.admin_staff_id
+          AND sa.start_time < v_shift_end
+          AND (sa.end_time IS NULL OR sa.end_time > v_shift_start)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign shift: admin staff was absent during this period';
+    END IF;
+
+END$$
+DELIMITER ;
+
+-- 8h rest doctor
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_doctor_shift_rest $$
+CREATE TRIGGER trg_doctor_shift_rest
+BEFORE INSERT ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_new_start DATETIME;
+    DECLARE v_new_end   DATETIME;
+    DECLARE v_count     INT;
+
+    SELECT s.start_time, s.end_time
+    INTO v_new_start, v_new_end
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    SELECT COUNT(*) INTO v_count
+    FROM doctor_shift ds
+    JOIN shift s ON ds.shift_id = s.id
+    WHERE ds.doctor_id = NEW.doctor_id
+      AND NOT (
+            s.end_time <= DATE_SUB(v_new_start, INTERVAL 8 HOUR)
+            OR
+            v_new_end <= DATE_SUB(s.start_time, INTERVAL 8 HOUR)
+      );
+
+    IF v_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor must have at least 8 hours rest between shifts';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- 8h rest nurse
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_nurse_shift_rest $$
+CREATE TRIGGER trg_nurse_shift_rest
+BEFORE INSERT ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_new_start DATETIME;
+    DECLARE v_new_end   DATETIME;
+    DECLARE v_count     INT;
+
+    SELECT s.start_time, s.end_time
+    INTO v_new_start, v_new_end
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    SELECT COUNT(*) INTO v_count
+    FROM nurse_shift ns
+    JOIN shift s ON ns.shift_id = s.id
+    WHERE ns.nurse_id = NEW.nurse_id
+      AND NOT (
+            s.end_time <= DATE_SUB(v_new_start, INTERVAL 8 HOUR)
+            OR
+            v_new_end <= DATE_SUB(s.start_time, INTERVAL 8 HOUR)
+      );
+
+    IF v_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nurse must have at least 8 hours rest between shifts';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- 8h rest admin staff
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_admin_shift_rest $$
+CREATE TRIGGER trg_admin_shift_rest
+BEFORE INSERT ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_new_start DATETIME;
+    DECLARE v_new_end   DATETIME;
+    DECLARE v_count     INT;
+
+    SELECT s.start_time, s.end_time
+    INTO v_new_start, v_new_end
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    SELECT COUNT(*) INTO v_count
+    FROM admin_shift a
+    JOIN shift s ON a.shift_id = s.id
+    WHERE a.admin_staff_id = NEW.admin_staff_id
+      AND NOT (
+            s.end_time <= DATE_SUB(v_new_start, INTERVAL 8 HOUR)
+            OR
+            v_new_end <= DATE_SUB(s.start_time, INTERVAL 8 HOUR)
+      );
+
+    IF v_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin staff must have at least 8 hours rest between shifts';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Doctor cannot work more than 3 consecutive night shifts
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_doctor_consecutive_nights $$
+CREATE TRIGGER trg_doctor_consecutive_nights
+BEFORE INSERT ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_type VARCHAR(45);
+    DECLARE v_shift_date DATE;
+    DECLARE v_violation  INT DEFAULT 0;
+
+    -- Get type and date of the new shift
+    SELECT s.type, DATE(s.start_time)
+    INTO v_shift_type, v_shift_date
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    -- Only check if the new shift is a night shift
+    IF v_shift_type = 'Night' THEN
+
+        -- Pattern 1: D-3, D-2, D-1, D(new)
+        IF EXISTS (
+            SELECT 1 FROM doctor_shift ds1
+            JOIN shift s1 ON ds1.shift_id = s1.id
+            WHERE ds1.doctor_id = NEW.doctor_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds2
+            JOIN shift s2 ON ds2.shift_id = s2.id
+            WHERE ds2.doctor_id = NEW.doctor_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds3
+            JOIN shift s3 ON ds3.shift_id = s3.id
+            WHERE ds3.doctor_id = NEW.doctor_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_SUB(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 2: D-2, D-1, D(new), D+1
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds1
+            JOIN shift s1 ON ds1.shift_id = s1.id
+            WHERE ds1.doctor_id = NEW.doctor_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds2
+            JOIN shift s2 ON ds2.shift_id = s2.id
+            WHERE ds2.doctor_id = NEW.doctor_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds3
+            JOIN shift s3 ON ds3.shift_id = s3.id
+            WHERE ds3.doctor_id = NEW.doctor_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 3: D-1, D(new), D+1, D+2
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds1
+            JOIN shift s1 ON ds1.shift_id = s1.id
+            WHERE ds1.doctor_id = NEW.doctor_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds2
+            JOIN shift s2 ON ds2.shift_id = s2.id
+            WHERE ds2.doctor_id = NEW.doctor_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds3
+            JOIN shift s3 ON ds3.shift_id = s3.id
+            WHERE ds3.doctor_id = NEW.doctor_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 4: D(new), D+1, D+2, D+3
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds1
+            JOIN shift s1 ON ds1.shift_id = s1.id
+            WHERE ds1.doctor_id = NEW.doctor_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds2
+            JOIN shift s2 ON ds2.shift_id = s2.id
+            WHERE ds2.doctor_id = NEW.doctor_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM doctor_shift ds3
+            JOIN shift s3 ON ds3.shift_id = s3.id
+            WHERE ds3.doctor_id = NEW.doctor_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        IF v_violation = 1 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Doctor cannot work more than 3 consecutive night shifts';
+        END IF;
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Nurse cannot work more than 3 consecutive night shifts
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_nurse_consecutive_nights $$
+CREATE TRIGGER trg_nurse_consecutive_nights
+BEFORE INSERT ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_type VARCHAR(45);
+    DECLARE v_shift_date DATE;
+    DECLARE v_violation  INT DEFAULT 0;
+
+    -- Get type and date of the new shift
+    SELECT s.type, DATE(s.start_time)
+    INTO v_shift_type, v_shift_date
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    -- Only check if the new shift is a night shift
+    IF v_shift_type = 'Night' THEN
+
+        -- Pattern 1: D-3, D-2, D-1, D(new)
+        IF EXISTS (
+            SELECT 1 FROM nurse_shift ns1
+            JOIN shift s1 ON ns1.shift_id = s1.id
+            WHERE ns1.nurse_id = NEW.nurse_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns2
+            JOIN shift s2 ON ns2.shift_id = s2.id
+            WHERE ns2.nurse_id = NEW.nurse_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns3
+            JOIN shift s3 ON ns3.shift_id = s3.id
+            WHERE ns3.nurse_id = NEW.nurse_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_SUB(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 2: D-2, D-1, D(new), D+1
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns1
+            JOIN shift s1 ON ns1.shift_id = s1.id
+            WHERE ns1.nurse_id = NEW.nurse_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns2
+            JOIN shift s2 ON ns2.shift_id = s2.id
+            WHERE ns2.nurse_id = NEW.nurse_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns3
+            JOIN shift s3 ON ns3.shift_id = s3.id
+            WHERE ns3.nurse_id = NEW.nurse_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 3: D-1, D(new), D+1, D+2
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns1
+            JOIN shift s1 ON ns1.shift_id = s1.id
+            WHERE ns1.nurse_id = NEW.nurse_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns2
+            JOIN shift s2 ON ns2.shift_id = s2.id
+            WHERE ns2.nurse_id = NEW.nurse_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns3
+            JOIN shift s3 ON ns3.shift_id = s3.id
+            WHERE ns3.nurse_id = NEW.nurse_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 4: D(new), D+1, D+2, D+3
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns1
+            JOIN shift s1 ON ns1.shift_id = s1.id
+            WHERE ns1.nurse_id = NEW.nurse_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns2
+            JOIN shift s2 ON ns2.shift_id = s2.id
+            WHERE ns2.nurse_id = NEW.nurse_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM nurse_shift ns3
+            JOIN shift s3 ON ns3.shift_id = s3.id
+            WHERE ns3.nurse_id = NEW.nurse_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        IF v_violation = 1 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Nurse cannot work more than 3 consecutive night shifts';
+        END IF;
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Admin staff cannot work more than 3 consecutive night shifts
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_admin_consecutive_nights $$
+CREATE TRIGGER trg_admin_consecutive_nights
+BEFORE INSERT ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_shift_type VARCHAR(45);
+    DECLARE v_shift_date DATE;
+    DECLARE v_violation  INT DEFAULT 0;
+
+    -- Get type and date of the new shift
+    SELECT s.type, DATE(s.start_time)
+    INTO v_shift_type, v_shift_date
+    FROM shift s
+    WHERE s.id = NEW.shift_id;
+
+    -- Only check if the new shift is a night shift
+    IF v_shift_type = 'Night' THEN
+
+        -- Pattern 1: D-3, D-2, D-1, D(new)
+        IF EXISTS (
+            SELECT 1 FROM admin_shift as1
+            JOIN shift s1 ON as1.shift_id = s1.id
+            WHERE as1.admin_staff_id = NEW.admin_staff_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as2
+            JOIN shift s2 ON as2.shift_id = s2.id
+            WHERE as2.admin_staff_id = NEW.admin_staff_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as3
+            JOIN shift s3 ON as3.shift_id = s3.id
+            WHERE as3.admin_staff_id = NEW.admin_staff_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_SUB(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 2: D-2, D-1, D(new), D+1
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as1
+            JOIN shift s1 ON as1.shift_id = s1.id
+            WHERE as1.admin_staff_id = NEW.admin_staff_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as2
+            JOIN shift s2 ON as2.shift_id = s2.id
+            WHERE as2.admin_staff_id = NEW.admin_staff_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_SUB(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as3
+            JOIN shift s3 ON as3.shift_id = s3.id
+            WHERE as3.admin_staff_id = NEW.admin_staff_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 3: D-1, D(new), D+1, D+2
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as1
+            JOIN shift s1 ON as1.shift_id = s1.id
+            WHERE as1.admin_staff_id = NEW.admin_staff_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_SUB(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as2
+            JOIN shift s2 ON as2.shift_id = s2.id
+            WHERE as2.admin_staff_id = NEW.admin_staff_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as3
+            JOIN shift s3 ON as3.shift_id = s3.id
+            WHERE as3.admin_staff_id = NEW.admin_staff_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        -- Pattern 4: D(new), D+1, D+2, D+3
+        IF v_violation = 0
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as1
+            JOIN shift s1 ON as1.shift_id = s1.id
+            WHERE as1.admin_staff_id = NEW.admin_staff_id
+              AND s1.type = 'Night'
+              AND DATE(s1.start_time) = DATE_ADD(v_shift_date, INTERVAL 1 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as2
+            JOIN shift s2 ON as2.shift_id = s2.id
+            WHERE as2.admin_staff_id = NEW.admin_staff_id
+              AND s2.type = 'Night'
+              AND DATE(s2.start_time) = DATE_ADD(v_shift_date, INTERVAL 2 DAY)
+        )
+        AND EXISTS (
+            SELECT 1 FROM admin_shift as3
+            JOIN shift s3 ON as3.shift_id = s3.id
+            WHERE as3.admin_staff_id = NEW.admin_staff_id
+              AND s3.type = 'Night'
+              AND DATE(s3.start_time) = DATE_ADD(v_shift_date, INTERVAL 3 DAY)
+        ) THEN
+            SET v_violation = 1;
+        END IF;
+
+        IF v_violation = 1 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Admin staff cannot work more than 3 consecutive night shifts';
+        END IF;
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_doctor_shift_no_update $$
+CREATE TRIGGER trg_doctor_shift_no_update
+BEFORE UPDATE ON doctor_shift
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Updates on doctor_shift are not allowed. Use DELETE and INSERT instead.';
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_nurse_shift_no_update $$
+CREATE TRIGGER trg_nurse_shift_no_update
+BEFORE UPDATE ON nurse_shift
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Updates on nurse_shift are not allowed. Use DELETE and INSERT instead.';
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_admin_shift_no_update $$
+CREATE TRIGGER trg_admin_shift_no_update
+BEFORE UPDATE ON admin_shift
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Updates on admin_shift are not allowed. Use DELETE and INSERT instead.';
+END$$
+DELIMITER ;
+
+-- surgery
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_surgery_before_insert $$
+CREATE TRIGGER trg_surgery_before_insert
+BEFORE INSERT ON surgery
+FOR EACH ROW
+BEGIN
+    DECLARE v_room_status    VARCHAR(45);
+    DECLARE v_room_type      VARCHAR(45);
+    DECLARE v_hosp_admission DATETIME;
+    DECLARE v_hosp_discharge DATETIME;
+    DECLARE v_new_end        DATETIME;
+    DECLARE v_room_overlap   INT DEFAULT 0;
+    DECLARE v_doctor_overlap INT DEFAULT 0;
+
+    -- Calculate surgery estimated end datetime based on start time and duration
+    SET v_new_end = DATE_ADD(NEW.start_time, INTERVAL NEW.duration MINUTE);
+
+    -- On insert, operating room must not be under maintenance
+    SELECT status, type INTO v_room_status, v_room_type
+    FROM operating_room
+    WHERE id = NEW.operating_room_id;
+
+    IF v_room_status = 'Under Maintenance' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: operating room is under maintenance.';
+    END IF;
+
+    -- On insert, surgery start and end must fall within the hospitalization admission and discharge dates
+    SELECT admission_date, discharge_date
+    INTO v_hosp_admission, v_hosp_discharge
+    FROM hospitalization
+    WHERE id = NEW.hospitalization_id;
+
+    IF NEW.start_time < v_hosp_admission THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot start before hospitalization admission.';
+    END IF;
+
+    IF v_hosp_discharge IS NOT NULL AND v_new_end > v_hosp_discharge THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot end after hospitalization discharge.';
+    END IF;
+
+    -- On insert, no other surgery can overlap in the same operating room at the same time
+    SELECT COUNT(*) INTO v_room_overlap
+    FROM surgery s
+    WHERE s.operating_room_id = NEW.operating_room_id
+      AND NEW.start_time < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
+      AND s.start_time   < v_new_end;
+
+    IF v_room_overlap > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: overlapping surgery in the same operating room is not allowed.';
+    END IF;
+
+    -- On insert, the same doctor cannot be the primary surgeon in two surgeries that overlap in time
+    SELECT COUNT(*) INTO v_doctor_overlap
+    FROM surgery s
+    WHERE s.doctor_id    = NEW.doctor_id
+      AND NEW.start_time < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
+      AND s.start_time   < v_new_end;
+
+    IF v_doctor_overlap > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: doctor cannot perform overlapping surgeries.';
+    END IF;
+
+    -- On insert, doctor must not be absent during the surgery
+    IF EXISTS (
+        SELECT 1 FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time < v_new_end
+          AND (sa.end_time IS NULL OR sa.end_time > NEW.start_time)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: doctor was absent during this period';
+    END IF;
+
+END$$
+
+DELIMITER ;
+
+-- MySQL Event for operating_room status
+CREATE EVENT evt_update_operating_room_status
+ON SCHEDULE EVERY 1 MINUTE
+DO
+    UPDATE operating_room op
+    SET op.status = CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM surgery s
+            WHERE s.operating_room_id = op.id
+              AND NOW() BETWEEN s.start_time
+              AND DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
+        )
+            THEN 'Occupied'
+        ELSE 'Available'
+    END
+    WHERE op.status != 'Under Maintenance';  
+
+
+-- FIFO
+
+CREATE VIEW vw_triage_queue AS
+SELECT 
+    t.id,
+    t.arrival_time,
+    t.urg_level,
+    t.service_time,
+    p.first_name,
+    p.last_name,
+    p.patient_amka,
+    d.name AS department
+FROM triage_entry t
+JOIN patient p    ON t.patient_id    = p.id
+JOIN department d ON t.department_id = d.id
+WHERE t.service_time IS NULL
+ORDER BY t.urg_level ASC,
+         t.arrival_time ASC,
+         t.id ASC;
+
+
+
+DELIMITER $$
+
+CREATE TRIGGER trg_triage_fifo_enforce
+BEFORE UPDATE ON triage_entry
+FOR EACH ROW
+BEGIN
+    DECLARE v_next_id INT UNSIGNED;
+
+   -- Only handle the case where a patient transitions
+   -- from unserved to served
+    IF OLD.service_time IS NULL AND NEW.service_time IS NOT NULL THEN
+
+
+    -- Find the next patient in the queue
+    -- ordered by urgency level and arrival time (FIFO)
+        SELECT t.id
+        INTO v_next_id
+        FROM triage_entry t
+        WHERE t.service_time IS NULL
+        ORDER BY t.urg_level ASC, t.arrival_time ASC, t.id ASC
+        LIMIT 1;
+
+    -- If the patient being served is not the next in queue, reject the update
+        IF NEW.id <> v_next_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Triage update failed: patient is not next in FIFO priority queue.';
+        END IF;
+
+    -- service time cannot be earlier than arrival time
+        IF NEW.service_time < OLD.arrival_time THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Triage update failed: service_time cannot be earlier than arrival_time.';
+        END IF;
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE serve_next_triage_patient()
+BEGIN
+    DECLARE v_next_id INT UNSIGNED;
+
+    SELECT t.id
+    INTO v_next_id
+    FROM triage_entry t
+    WHERE t.service_time IS NULL
+    ORDER BY t.urg_level ASC, t.arrival_time ASC, t.id ASC
+    LIMIT 1;
+
+    IF v_next_id IS NOT NULL THEN
+        UPDATE triage_entry
+        SET service_time = NOW()
+        WHERE id = v_next_id;
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_hospitalization_before_insert
+BEFORE INSERT ON hospitalization
+FOR EACH ROW
+BEGIN
+    DECLARE v_triage_patient_id INT UNSIGNED;
+    DECLARE v_triage_arrival    DATETIME;
+    DECLARE v_triage_service    DATETIME;
+
+    SELECT t.patient_id, t.arrival_time, t.service_time
+    INTO v_triage_patient_id, v_triage_arrival, v_triage_service
+    FROM triage_entry t
+    WHERE t.id = NEW.triage_entry_id;
+
+    IF NEW.patient_id <> v_triage_patient_id THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Hospitalization insert failed: patient_id must match triage_entry patient_id.';
+    END IF;
+
+    IF v_triage_service IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Hospitalization insert failed: triage entry must be served before hospitalization.';
+    END IF;
+
+    IF NEW.admission_date < v_triage_service THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Hospitalization insert failed: admission_date cannot be earlier than triage service_time.';
+    END IF;
+
+    -- Bed must not be occupied by another active hospitalization
+    IF EXISTS (
+        SELECT 1 FROM hospitalization h
+        WHERE h.bed_no      = NEW.bed_no
+          AND h.bed_dept_id = NEW.bed_dept_id
+          AND h.discharge_date IS NULL
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Hospitalization insert failed: bed is already occupied.';
+    END IF;
+
+END$$
+DELIMITER ;
+
+-- bed status
+
+CREATE EVENT evt_update_bed_status
+ON SCHEDULE EVERY 1 MINUTE
+DO
+    UPDATE bed b
+    SET b.status = CASE
+        WHEN EXISTS (
+            SELECT 1 FROM hospitalization h
+            WHERE h.bed_no      = b.no
+              AND h.bed_dept_id = b.dept_id
+              AND NOW() >= h.admission_date
+              AND (h.discharge_date IS NULL OR NOW() < h.discharge_date)
+        )
+            THEN 'Occupied'
+        ELSE 'Available'
+    END
+    WHERE b.status != 'Under Maintenance';
+
+-- shift constraints 
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_shift_before_insert $$
+CREATE TRIGGER trg_shift_before_insert
+BEFORE INSERT ON shift
+FOR EACH ROW
+BEGIN
+    IF NEW.type = 'Morning'   AND (TIME(NEW.start_time) <> '07:00:00' OR TIME(NEW.end_time) <> '15:00:00') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Morning shift must be 07:00-15:00';
+    END IF;
+
+    IF NEW.type = 'Afternoon' AND (TIME(NEW.start_time) <> '15:00:00' OR TIME(NEW.end_time) <> '23:00:00') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Afternoon shift must be 15:00-23:00';
+    END IF;
+
+    IF NEW.type = 'Night'     AND (TIME(NEW.start_time) <> '23:00:00' OR TIME(NEW.end_time) <> '07:00:00') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Night shift must be 23:00-07:00';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_shift_min_staff_on_finalize $$
+CREATE TRIGGER trg_shift_min_staff_on_finalize
+BEFORE UPDATE ON shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_doctor_count   INT DEFAULT 0;
+    DECLARE v_nurse_count    INT DEFAULT 0;
+    DECLARE v_admin_count    INT DEFAULT 0;
+    DECLARE v_resident_count INT DEFAULT 0;
+    DECLARE v_senior_count   INT DEFAULT 0;
+
+    IF OLD.is_finalized = 0 AND NEW.is_finalized = 1 THEN
+
+        SELECT COUNT(*) INTO v_doctor_count
+        FROM doctor_shift WHERE shift_id = NEW.id;
+
+        SELECT COUNT(*) INTO v_nurse_count
+        FROM nurse_shift WHERE shift_id = NEW.id;
+
+        SELECT COUNT(*) INTO v_admin_count
+        FROM admin_shift WHERE shift_id = NEW.id;
+
+        -- Check minimum staffing requirements
+        IF v_doctor_count < 3 OR v_nurse_count < 6 OR v_admin_count < 2 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Shift does not meet minimum staffing requirements (3 doctors, 6 nurses, 2 admin staff)';
+        END IF;
+
+        -- Check if there are Residents without a Senior Attending or Director
+        SELECT COUNT(*) INTO v_resident_count
+        FROM doctor_shift ds
+        JOIN doctor d     ON ds.doctor_id = d.id
+        JOIN doc_grade dg ON d.doc_grade_id = dg.id
+        WHERE ds.shift_id = NEW.id
+          AND dg.name = 'Resident';
+
+        IF v_resident_count > 0 THEN
+
+            SELECT COUNT(*) INTO v_senior_count
+            FROM doctor_shift ds
+            JOIN doctor d     ON ds.doctor_id = d.id
+            JOIN doc_grade dg ON d.doc_grade_id = dg.id
+            WHERE ds.shift_id = NEW.id
+              AND dg.name IN ('Senior Attending', 'Director');
+
+            IF v_senior_count = 0 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Shift cannot be finalized: Residents require at least one Senior Attending or Director';
+            END IF;
+
+        END IF;
+
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_doctor_shift_no_delete_finalized $$
+CREATE TRIGGER trg_doctor_shift_no_delete_finalized
+BEFORE DELETE ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = OLD.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete doctor assignment from a finalized shift';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_nurse_shift_no_delete_finalized $$
+CREATE TRIGGER trg_nurse_shift_no_delete_finalized
+BEFORE DELETE ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = OLD.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete nurse assignment from a finalized shift';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_admin_shift_no_delete_finalized $$
+CREATE TRIGGER trg_admin_shift_no_delete_finalized
+BEFORE DELETE ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = OLD.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete admin assignment from a finalized shift';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_doctor_shift_no_insert_finalized $$
+CREATE TRIGGER trg_doctor_shift_no_insert_finalized
+BEFORE INSERT ON doctor_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot add doctor to a finalized shift';
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_nurse_shift_no_insert_finalized $$
+CREATE TRIGGER trg_nurse_shift_no_insert_finalized
+BEFORE INSERT ON nurse_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot add nurse to a finalized shift';
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_admin_shift_no_insert_finalized $$
+CREATE TRIGGER trg_admin_shift_no_insert_finalized
+BEFORE INSERT ON admin_shift
+FOR EACH ROW
+BEGIN
+    DECLARE v_finalized TINYINT;
+
+    SELECT is_finalized INTO v_finalized
+    FROM shift
+    WHERE id = NEW.shift_id;
+
+    IF v_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot add admin staff to a finalized shift';
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_shift_no_update $$
+CREATE TRIGGER trg_shift_no_update
+BEFORE UPDATE ON shift
+FOR EACH ROW
+BEGIN
+    -- Prevent updates on finalized shifts (except is_finalized itself)
+    IF OLD.is_finalized = 1 AND NEW.is_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot update a finalized shift';
+    END IF;
+
+    -- Prevent changes to start_time, end_time and type for all shifts
+    IF OLD.start_time <> NEW.start_time THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot update start_time of a shift';
+    END IF;
+
+    IF OLD.end_time <> NEW.end_time THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot update end_time of a shift';
+    END IF;
+
+    IF OLD.type <> NEW.type THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot update type of a shift';
+    END IF;
+END$$
+DELIMITER ;
+
+-- prescription
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_prescription_allergy $$
+CREATE TRIGGER trg_prescription_allergy
+BEFORE INSERT ON prescription
+FOR EACH ROW
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM is_allergic ia
+        JOIN contains c
+          ON ia.active_substance_id = c.active_substance_id
+        WHERE ia.patient_id = NEW.patient_id
+          AND c.medication_id = NEW.medication_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prescription failed: patient is allergic to an active substance in this medication';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_prescription_no_update $$
+CREATE TRIGGER trg_prescription_no_update
+BEFORE UPDATE ON prescription
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Updates on prescription are not allowed. Use DELETE and INSERT instead.';
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_staff_no_delete $$
+CREATE TRIGGER trg_staff_no_delete
+BEFORE DELETE ON staff
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Deletion of staff members is not allowed. See staff_absence.';
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_doctor_no_delete $$
+CREATE TRIGGER trg_doctor_no_delete
+BEFORE DELETE ON doctor
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Deletion of doctors is not allowed. See staff_absence.';
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_nurse_no_delete $$
+CREATE TRIGGER trg_nurse_no_delete
+BEFORE DELETE ON nurse
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Deletion of nurses is not allowed. See staff_absence.';
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_admin_staff_no_delete $$
+CREATE TRIGGER trg_admin_staff_no_delete
+BEFORE DELETE ON admin_staff
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Deletion of admin staff is not allowed. See staff_absence.';
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_department_director_grade $$
+CREATE TRIGGER trg_department_director_grade
+BEFORE INSERT ON department
+FOR EACH ROW
+BEGIN
+    DECLARE v_grade VARCHAR(45);
+    DECLARE v_count INT DEFAULT 0;
+
+    -- Ο γιατρός που μπαίνει ως director του department
+    -- πρέπει να έχει grade = 'Director'
+    SELECT dg.name
+    INTO v_grade
+    FROM doctor d
+    JOIN doc_grade dg ON d.doc_grade_id = dg.id
+    WHERE d.id = NEW.doctor_id;
+
+    IF v_grade <> 'Director' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Department director must be a doctor with grade Director';
+    END IF;
+
+    -- Extra assumption:
+    -- Ο ίδιος doctor δεν μπορεί να είναι director σε περισσότερα από 1 departments
+    SELECT COUNT(*)
+    INTO v_count
+    FROM department dep
+    WHERE dep.doctor_id = NEW.doctor_id;
+
+    IF v_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'A doctor cannot be director of more than one department';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_department_director_grade_upd $$
+CREATE TRIGGER trg_department_director_grade_upd
+BEFORE UPDATE ON department
+FOR EACH ROW
+BEGIN
+    DECLARE v_grade VARCHAR(45);
+    DECLARE v_count INT DEFAULT 0;
+
+    IF NEW.doctor_id <> OLD.doctor_id THEN
+
+        -- director grade must be  = 'Director'
+        SELECT dg.name
+        INTO v_grade
+        FROM doctor d
+        JOIN doc_grade dg ON d.doc_grade_id = dg.id
+        WHERE d.id = NEW.doctor_id;
+
+        IF v_grade <> 'Director' THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Department director must be a doctor with grade Director';
+        END IF;
+
+        -- A doctor cannot direct more than one departments
+        SELECT COUNT(*)
+        INTO v_count
+        FROM department dep
+        WHERE dep.doctor_id = NEW.doctor_id
+          AND dep.id <> OLD.id;
+
+        IF v_count > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'A doctor cannot be director of more than one department';
+        END IF;
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- surgery assistants
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_help_before_insert $$
+CREATE TRIGGER trg_help_before_insert
+BEFORE INSERT ON help
+FOR EACH ROW
+BEGIN
+    DECLARE v_surgery_start    DATETIME;
+    DECLARE v_surgery_end      DATETIME;
+    DECLARE v_primary_doctor   INT UNSIGNED;
+    DECLARE v_surgery_duration SMALLINT UNSIGNED;
+    DECLARE v_staff_type       VARCHAR(45);
+
+    -- Get surgery details
+    SELECT doctor_id, start_time, duration
+    INTO v_primary_doctor, v_surgery_start, v_surgery_duration
+    FROM surgery
+    WHERE id = NEW.surgery_id;
+
+    SET v_surgery_end = DATE_ADD(v_surgery_start, INTERVAL v_surgery_duration MINUTE);
+
+    -- Helper must be doctor or nurse
+    SELECT staff_type
+    INTO v_staff_type
+    FROM staff
+    WHERE id = NEW.staff_id;
+
+    IF v_staff_type NOT IN ('Doctor', 'Nurse') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper must be a doctor or nurse';
+    END IF;
+
+    -- Helper cannot be the primary surgeon of the same surgery
+    IF NEW.staff_id = v_primary_doctor THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper cannot be the primary surgeon of the same surgery';
+    END IF;
+
+    -- Helper cannot be in another overlapping surgery at the same time
+    IF EXISTS (
+        SELECT 1
+        FROM surgery s
+        WHERE s.id <> NEW.surgery_id
+          AND (
+                s.doctor_id = NEW.staff_id
+                OR EXISTS (
+                    SELECT 1
+                    FROM help h
+                    WHERE h.surgery_id = s.id
+                      AND h.staff_id = NEW.staff_id
+                )
+          )
+          AND v_surgery_start < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
+          AND s.start_time < v_surgery_end
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper is already involved in an overlapping surgery';
+    END IF;
+
+    -- Helper must not be absent during the surgery
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.staff_id
+          AND sa.start_time < v_surgery_end
+          AND (sa.end_time IS NULL OR sa.end_time > v_surgery_start)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper was absent during this surgery';
+    END IF;
+
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_help_before_update $$
+CREATE TRIGGER trg_help_before_update
+BEFORE UPDATE ON help
+FOR EACH ROW
+BEGIN
+    DECLARE v_surgery_start    DATETIME;
+    DECLARE v_surgery_end      DATETIME;
+    DECLARE v_primary_doctor   INT UNSIGNED;
+    DECLARE v_surgery_duration SMALLINT UNSIGNED;
+    DECLARE v_staff_type       VARCHAR(45);
+
+    -- Get surgery details
+    SELECT doctor_id, start_time, duration
+    INTO v_primary_doctor, v_surgery_start, v_surgery_duration
+    FROM surgery
+    WHERE id = NEW.surgery_id;
+
+    SET v_surgery_end = DATE_ADD(v_surgery_start, INTERVAL v_surgery_duration MINUTE);
+
+    -- Helper must be doctor or nurse
+    SELECT staff_type
+    INTO v_staff_type
+    FROM staff
+    WHERE id = NEW.staff_id;
+
+    IF v_staff_type NOT IN ('Doctor', 'Nurse') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper must be a doctor or nurse';
+    END IF;
+
+    -- Helper cannot be the primary surgeon of the same surgery
+    IF NEW.staff_id = v_primary_doctor THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper cannot be the primary surgeon of the same surgery';
+    END IF;
+
+    -- Helper cannot be in another overlapping surgery at the same time
+    IF EXISTS (
+        SELECT 1
+        FROM surgery s
+        WHERE s.id <> NEW.surgery_id
+          AND (
+                s.doctor_id = NEW.staff_id
+                OR EXISTS (
+                    SELECT 1
+                    FROM help h
+                    WHERE h.surgery_id = s.id
+                      AND h.staff_id = NEW.staff_id
+                )
+          )
+          AND v_surgery_start < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
+          AND s.start_time < v_surgery_end
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper is already involved in an overlapping surgery';
+    END IF;
+
+    -- Helper must not be absent during the surgery
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.staff_id
+          AND sa.start_time < v_surgery_end
+          AND (sa.end_time IS NULL OR sa.end_time > v_surgery_start)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Help insert failed: helper was absent during this surgery';
+    END IF;
+
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_prescription_hospitalization_check $$
+CREATE TRIGGER trg_prescription_hospitalization_check
+BEFORE INSERT ON prescription
+FOR EACH ROW
+BEGIN
+    DECLARE v_hosp_patient_id INT UNSIGNED;
+    DECLARE v_hosp_discharge  DATETIME;
+
+    SELECT patient_id, discharge_date
+    INTO v_hosp_patient_id, v_hosp_discharge
+    FROM hospitalization
+    WHERE id = NEW.hospitalization_id;
+
+    IF v_hosp_patient_id <> NEW.patient_id THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prescription failed: patient does not match hospitalization';
+    END IF;
+
+    IF v_hosp_discharge IS NOT NULL 
+       AND NEW.pres_day > DATE(v_hosp_discharge) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prescription failed: prescription date is after discharge';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_triage_dept_check $$
+CREATE TRIGGER trg_triage_dept_check
+BEFORE INSERT ON triage_entry
+FOR EACH ROW
+BEGIN
+    DECLARE v_dept_name VARCHAR(45);
+
+    SELECT name INTO v_dept_name
+    FROM department
+    WHERE id = NEW.department_id;
+
+    IF v_dept_name <> 'Emergency Department' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Triage entry must belong to the Emergency department';
+    END IF;
+END$$
+DELIMITER ;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+
+
+
