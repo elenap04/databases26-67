@@ -14,7 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema Ygeiopolis_db
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Ygeiopolis_db` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `Ygeiopolis_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `Ygeiopolis_db` ;
 
 -- -----------------------------------------------------
@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient` (
   `first_name` VARCHAR(45) NOT NULL,
   `last_name` VARCHAR(45) NOT NULL,
   `father_name` VARCHAR(45) NOT NULL,
-  `age` TINYINT(3) UNSIGNED NOT NULL,
+  `age` TINYINT(3) UNSIGNED NULL,
+  `date_of_birth` DATE NOT NULL,
   `sex` VARCHAR(10) NOT NULL,
   `weight` DECIMAL(5,2) NULL,
   `height` DECIMAL(5,2) NULL,
@@ -39,13 +40,13 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient` (
   `blood_type` VARCHAR(3) NULL,
   PRIMARY KEY (`id`),
   
-  CONSTRAINT `chk_patient_age` CHECK (age > 0 AND age < 130),
   CONSTRAINT `chk_patient_sex` CHECK (sex IN('Male', 'Female', 'Other')),
   CONSTRAINT `chk_patient_weight` CHECK (weight IS NULL OR weight > 0),
   CONSTRAINT `chk_patient_height` CHECK (height IS NULL OR height > 0),
   CONSTRAINT `chk_patient_email` CHECK (email IS NULL OR email LIKE '%@%.%'),
   CONSTRAINT `chk_patient_blood_type` CHECK (blood_type IS NULL OR blood_type IN ('A+','A-','B+','B-','AB+','AB-','O+','O-'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `patient_amka_UNIQUE` ON `Ygeiopolis_db`.`patient` (`patient_amka` ASC) VISIBLE;
 
@@ -60,16 +61,17 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff` (
   `staff_amka` VARCHAR(11) NOT NULL,
   `first_name` VARCHAR(45) NOT NULL,
   `last_name` VARCHAR(45) NOT NULL,
-  `age` TINYINT(3) NOT NULL,
+  `date_of_birth` DATE NOT NULL,
+  `age` TINYINT(3) UNSIGNED NULL,
   `email` VARCHAR(100) NOT NULL,
   `hire_date` DATE NOT NULL,
   `staff_type` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   
-  CONSTRAINT `chk_staff_age` CHECK (age > 0 AND age < 130),
   CONSTRAINT `chk_staff_email` CHECK (email LIKE '%@%.%'),
   CONSTRAINT `chk_staff_type` CHECK (staff_type IN('Doctor', 'Nurse', 'Administration'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `staff_amka_UNIQUE` ON `Ygeiopolis_db`.`staff` (`staff_amka` ASC) VISIBLE;
 
@@ -82,19 +84,21 @@ CREATE UNIQUE INDEX `email_UNIQUE` ON `Ygeiopolis_db`.`staff` (`email` ASC) VISI
 DROP TABLE IF EXISTS `Ygeiopolis_db`.`contact_person` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`contact_person` (
-  `id` VARCHAR(8) NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `identification_no` VARCHAR(8) NULL,
   `relation` VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `patient_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`, `patient_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_contact_person_patient`
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
     
   CONSTRAINT `chk_contact_person_relation` CHECK (relation IN ('Spouse', 'Parent', 'Child', 'Sibling', 'Friend', 'Other'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_contact_person_patient_idx` ON `Ygeiopolis_db`.`contact_person` (`patient_id` ASC) VISIBLE;
 
@@ -109,7 +113,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doc_grade` (
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `chk_doctor_grade` CHECK (name IN ('Resident', 'Junior Attending', 'Senior Attending', 'Director'))
-)ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`doc_grade` (`name` ASC) VISIBLE;
 
@@ -123,7 +128,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doc_spec` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`)
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`doc_spec` (`name` ASC) VISIBLE;
 
@@ -162,8 +168,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doctor` (
     ON UPDATE NO ACTION,
     
   CONSTRAINT `supervisor_of_myself` CHECK (supervisor_id IS NULL OR supervisor_id <> id)
-  )ENGINE = InnoDB
-   COMMENT = '	';
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `supervisor_id_idx` ON `Ygeiopolis_db`.`doctor` (`supervisor_id` ASC) VISIBLE;
 
@@ -196,7 +202,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`department` (
     
   CONSTRAINT `chk_beds_no` CHECK (beds_no > 0),
   CONSTRAINT `chk_floor` CHECK (floor > -4 AND floor < 21)
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_department_doctor1_idx` ON `Ygeiopolis_db`.`department` (`doctor_id` ASC) VISIBLE;
 
@@ -214,7 +221,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`nurse_grade` (
   PRIMARY KEY (`id`),
   
   CONSTRAINT `chk_nurse_grade` CHECK (name IN('Nursing Assistant', 'Nurse', 'Head Nurse'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`nurse_grade` (`name` ASC) VISIBLE;
 
@@ -243,8 +251,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`nurse` (
     FOREIGN KEY (`nurse_grade_id`)
     REFERENCES `Ygeiopolis_db`.`nurse_grade` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_nurse_department1_idx` ON `Ygeiopolis_db`.`nurse` (`department_id` ASC) VISIBLE;
 
@@ -283,7 +292,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`triage_entry` (
     
   CONSTRAINT `chk_triage_urg_level` CHECK (urg_level BETWEEN 1 AND 5),
   CONSTRAINT `chk_triage_service_time` CHECK (service_time IS NULL OR service_time >= arrival_time)
-    )ENGINE = InnoDB;
+   ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_triage_entry_department1_idx` ON `Ygeiopolis_db`.`triage_entry` (`department_id` ASC) VISIBLE;
 
@@ -306,12 +316,13 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`bed` (
   CONSTRAINT `fk_bed_dept`
     FOREIGN KEY (`dept_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
     
   CONSTRAINT `chk_bed_type` CHECK (type IN ('ICU', 'Single', 'Multi')),
   CONSTRAINT `chk_bed_status` CHECK (status IN ('Available', 'Occupied', 'Under Maintenance'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `dept_id_idx` ON `Ygeiopolis_db`.`bed` (`dept_id` ASC) VISIBLE;
 
@@ -350,7 +361,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`hospitalization` (
   CONSTRAINT `chk_discharge_date` CHECK (discharge_date IS NULL OR discharge_date > admission_date),
   CONSTRAINT `chk_hospitalization_cost` CHECK (total_cost IS NULL OR total_cost >= 0)
     
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_hospitalization_triage_entry1_idx` ON `Ygeiopolis_db`.`hospitalization` (`triage_entry_id` ASC) VISIBLE;
 
@@ -370,7 +382,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`clinical_room` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -380,9 +393,10 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`mp_entryB` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`mp_entryB` (
   `code` VARCHAR(20) NOT NULL,
-  `description` VARCHAR(45) NULL,
-  PRIMARY KEY (`code`))
-ENGINE = InnoDB;
+  `description` VARCHAR(700) NOT NULL,
+  PRIMARY KEY (`code`)
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -392,13 +406,14 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`lab_exam` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`lab_exam` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `patient_id` INT UNSIGNED NOT NULL,
   `type` VARCHAR(45) NOT NULL,
   `date` DATETIME NOT NULL,
   `numeric_result` INT NULL,
   `text_result` TEXT(500) NULL,
   `cost` DECIMAL(10,2) NOT NULL,
   `clinical_room_id` INT UNSIGNED NOT NULL,
-  `hospitalization_id` INT UNSIGNED NOT NULL,
+  `hospitalization_id` INT UNSIGNED NULL,
   `doctor_id` INT UNSIGNED NOT NULL,
   `mp_entryB_code` VARCHAR(20) NOT NULL,
   `unit` VARCHAR(20) NULL,
@@ -423,9 +438,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`lab_exam` (
     REFERENCES `Ygeiopolis_db`.`mp_entryB` (`code`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
+    CONSTRAINT `fk_lab_exam_patient1`
+    FOREIGN KEY (`patient_id`)
+    REFERENCES `Ygeiopolis_db`.`patient` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
     
   CONSTRAINT `chk_lab_exam_cost` CHECK (cost >= 0)
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_lab_exam_clinical_room1_idx` ON `Ygeiopolis_db`.`lab_exam` (`clinical_room_id` ASC) VISIBLE;
 
@@ -434,6 +455,8 @@ CREATE INDEX `fk_lab_exam_hospitalization1_idx` ON `Ygeiopolis_db`.`lab_exam` (`
 CREATE INDEX `fk_lab_exam_doctor1_idx` ON `Ygeiopolis_db`.`lab_exam` (`doctor_id` ASC) VISIBLE;
 
 CREATE INDEX `fk_lab_exam_mp_entryB1_idx` ON `Ygeiopolis_db`.`lab_exam` (`mp_entryB_code` ASC) VISIBLE;
+
+CREATE INDEX `fk_lab_exam_patient1_idx` ON `Ygeiopolis_db`.`lab_exam` (`patient_id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -451,7 +474,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`KEN` (
   CONSTRAINT `chk_ken_base_cost` CHECK (base_cost >= 0),
   CONSTRAINT `chk_ken_mdh` CHECK (mdh >= 0),
   CONSTRAINT `chk_ken_daily_extra` CHECK (daily_extra_charge >= 0)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -466,7 +490,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`insurance_provider` (
   PRIMARY KEY (`id`),
   
   CONSTRAINT `chk_insurance_type` CHECK (type IN ('Public', 'Private'))
-  )ENGINE = InnoDB;
+ ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`insurance_provider` (`name` ASC) VISIBLE;
 
@@ -478,15 +503,16 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`medication` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`medication` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(300) NOT NULL,
   `auth_country` VARCHAR(45) NOT NULL,
-  `mark_auth_holder` VARCHAR(100) NOT NULL,
-  `master_file_loc` VARCHAR(200) NOT NULL,
+  `mark_auth_holder` VARCHAR(300) NOT NULL,
+  `master_file_loc` VARCHAR(300) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   
   CONSTRAINT `chk_medication_email` CHECK (email LIKE '%@%.%')
-  )ENGINE = InnoDB;
+ ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -503,7 +529,7 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`prescription` (
   `patient_id` INT UNSIGNED NOT NULL,
   `doctor_id` INT UNSIGNED NOT NULL,
   `medication_id` INT UNSIGNED NOT NULL,
-  `hospitalization_id` INT UNSIGNED NOT NULL,
+  `hospitalization_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_prescription_patient1`
     FOREIGN KEY (`patient_id`)
@@ -524,8 +550,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`prescription` (
     FOREIGN KEY (`hospitalization_id`)
     REFERENCES `Ygeiopolis_db`.`hospitalization` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_prescription_patient1_idx` ON `Ygeiopolis_db`.`prescription` (`patient_id` ASC) VISIBLE;
 
@@ -544,9 +571,10 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`active_substance` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`active_substance` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+  `name` VARCHAR(500) NOT NULL,
+  PRIMARY KEY (`id`)
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `name_UNIQUE` ON `Ygeiopolis_db`.`active_substance` (`name` ASC) VISIBLE;
 
@@ -563,7 +591,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`operating_room` (
   PRIMARY KEY (`id`),
   
   CONSTRAINT `chk_operating_room_status` CHECK (status IN ('Available', 'Occupied', 'Under Maintenance'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -573,9 +602,10 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`mp_entryA` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`mp_entryA` (
   `code` VARCHAR(20) NOT NULL,
-  `description` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(700) NOT NULL,
   PRIMARY KEY (`code`)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `code_UNIQUE` ON `Ygeiopolis_db`.`mp_entryA` (`code` ASC) VISIBLE;
 
@@ -590,11 +620,13 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`surgery` (
   `category` VARCHAR(45) NOT NULL,
   `duration` SMALLINT(5) UNSIGNED NOT NULL,
   `cost` DECIMAL(10,2) NOT NULL,
-  `hospitalization_id` INT UNSIGNED NOT NULL,
+  `hospitalization_id` INT UNSIGNED NULL,
   `operating_room_id` INT UNSIGNED NOT NULL,
   `doctor_id` INT UNSIGNED NOT NULL,
+  `patient_id` INT UNSIGNED NOT NULL,
   `mp_entryA_code` VARCHAR(20) NOT NULL,
   `start_time` DATETIME NOT NULL,
+  `is_finalized` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_surgery_hospitalization1`
     FOREIGN KEY (`hospitalization_id`)
@@ -616,9 +648,17 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`surgery` (
     REFERENCES `Ygeiopolis_db`.`mp_entryA` (`code`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
+    CONSTRAINT `fk_surgery_patient1`
+    FOREIGN KEY (`patient_id`)
+    REFERENCES `Ygeiopolis_db`.`patient` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
     
-  CONSTRAINT `chk_surgery_category` CHECK (category = 'Surgical')
-  )ENGINE = InnoDB;
+  CONSTRAINT `chk_surgery_category` CHECK (category = 'Surgical'),
+  CONSTRAINT `chk_surgery_is_finalized`CHECK (is_finalized IN (0,1)),
+  CONSTRAINT `chk_surgery_finalization` CHECK (is_finalized = 0 OR hospitalization_id IS NOT NULL)
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_surgery_hospitalization1_idx` ON `Ygeiopolis_db`.`surgery` (`hospitalization_id` ASC) VISIBLE;
 
@@ -627,6 +667,9 @@ CREATE INDEX `fk_surgery_operating_room1_idx` ON `Ygeiopolis_db`.`surgery` (`ope
 CREATE INDEX `fk_surgery_doctor1_idx` ON `Ygeiopolis_db`.`surgery` (`doctor_id` ASC) VISIBLE;
 
 CREATE INDEX `fk_surgery_mp_entryA1_idx` ON `Ygeiopolis_db`.`surgery` (`mp_entryA_code` ASC) VISIBLE;
+
+CREATE INDEX `fk_surgery_patient1_idx` ON `Ygeiopolis_db`.`surgery` (`patient_id` ASC) VISIBLE;
+
 
 
 -- -----------------------------------------------------
@@ -654,7 +697,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`evaluation` (
   CONSTRAINT `chk_eval_cleanness` CHECK (cleanness BETWEEN 1 AND 5),
   CONSTRAINT `chk_eval_food` CHECK (food BETWEEN 1 AND 5),
   CONSTRAINT `chk_eval_tot_experience` CHECK (tot_experience BETWEEN 1 AND 5)
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_evaluation_hospitalization1_idx` ON `Ygeiopolis_db`.`evaluation` (`hospitalization_id` ASC) VISIBLE;
 
@@ -668,11 +712,13 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`med_proc` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`med_proc` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `patient_id` INT UNSIGNED NOT NULL,
   `category` VARCHAR(45) NOT NULL,
   `duration` SMALLINT(5) UNSIGNED NULL,
   `cost` DECIMAL(10,2) NOT NULL,
+  `date` DATETIME NOT NULL,
   `clinical_room_id` INT UNSIGNED NOT NULL,
-  `hospitalization_id` INT UNSIGNED NOT NULL,
+  `hospitalization_id` INT UNSIGNED NULL,
   `mp_entryA_code` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_med_proc_clinical_room1`
@@ -690,17 +736,26 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`med_proc` (
     REFERENCES `Ygeiopolis_db`.`mp_entryA` (`code`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
+  CONSTRAINT `fk_med_proc_patient1`
+    FOREIGN KEY (`patient_id`)
+    REFERENCES `Ygeiopolis_db`.`patient` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
     
   CONSTRAINT `chk_med_proc_cost` CHECK (cost >= 0),
   CONSTRAINT `chk_med_proc_duration` CHECK (duration IS NULL OR duration > 0),
   CONSTRAINT `chk_med_proc_category` CHECK (category IN ('Diagnostic', 'Therapeutic'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_examination_clinical_room1_idx` ON `Ygeiopolis_db`.`med_proc` (`clinical_room_id` ASC) VISIBLE;
 
 CREATE INDEX `fk_examination_hospitalization1_idx` ON `Ygeiopolis_db`.`med_proc` (`hospitalization_id` ASC) VISIBLE;
 
 CREATE INDEX `fk_examination_mp_entryA1_idx` ON `Ygeiopolis_db`.`med_proc` (`mp_entryA_code` ASC) VISIBLE;
+
+CREATE INDEX `fk_med_proc_patient1_idx` ON `Ygeiopolis_db`.`med_proc` (`patient_id` ASC) VISIBLE;
+
 
 
 -- -----------------------------------------------------
@@ -710,9 +765,10 @@ DROP TABLE IF EXISTS `Ygeiopolis_db`.`hosp_entry` ;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`hosp_entry` (
   `code` VARCHAR(10) NOT NULL,
-  `description` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`code`))
-ENGINE = InnoDB;
+  `description` VARCHAR(300) NOT NULL,
+  PRIMARY KEY (`code`)
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -736,7 +792,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`admin_staff` (
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-  )ENGINE = InnoDB;
+ ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_admin_staff_department1_idx` ON `Ygeiopolis_db`.`admin_staff` (`department_id` ASC) VISIBLE;
 
@@ -763,7 +820,8 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`shift` (
   CONSTRAINT `chk_shift_type` CHECK (type IN ('Morning', 'Afternoon', 'Night')),
   CONSTRAINT `chk_shift_is_finalized` CHECK (is_finalized IN (0, 1)),
   CONSTRAINT `chk_shift_times` CHECK (end_time > start_time)
-  )ENGINE = InnoDB;
+ ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -778,9 +836,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`triage_symptom` (
   CONSTRAINT `fk_triage_symptom_triage`
     FOREIGN KEY (`triage_id`)
     REFERENCES `Ygeiopolis_db`.`triage_entry` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -795,9 +853,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`medication_tel` (
   CONSTRAINT `fk_med_tel_med`
     FOREIGN KEY (`med_id`)
     REFERENCES `Ygeiopolis_db`.`medication` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -812,9 +871,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient_tel` (
   CONSTRAINT `fk_patient_tel_patient`
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 -- -----------------------------------------------------
@@ -831,9 +891,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`bed_img` (
   CONSTRAINT `fk_bed_img_bed`
     FOREIGN KEY (`bed_no` , `dept_id`)
     REFERENCES `Ygeiopolis_db`.`bed` (`no` , `dept_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `bed_id_idx` ON `Ygeiopolis_db`.`bed_img` (`bed_no` ASC, `dept_id` ASC) VISIBLE;
 
@@ -853,9 +914,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`dept_img` (
   CONSTRAINT `fk_dept_img_dept`
     FOREIGN KEY (`dept_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`dept_img` (`image_url` ASC) VISIBLE;
 
@@ -873,9 +935,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`op_room_img` (
   CONSTRAINT `fk_op_room_img_op_room`
     FOREIGN KEY (`op_room_id`)
     REFERENCES `Ygeiopolis_db`.`operating_room` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`op_room_img` (`image_url` ASC) VISIBLE;
 
@@ -892,29 +955,27 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`medication_route_admin` (
   CONSTRAINT `fk_med_route_med`
     FOREIGN KEY (`med_id`)
     REFERENCES `Ygeiopolis_db`.`medication` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
--- -----------------------------------------------------
--- Table `Ygeiopolis_db`.`contact_person_tel`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `Ygeiopolis_db`.`contact_person_tel` ;
+
+DROP TABLE IF EXISTS `Ygeiopolis_db`.`contact_person_tel`;
 
 CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`contact_person_tel` (
   `tel_no` VARCHAR(15) NOT NULL,
-  `contact_person_id` VARCHAR(8) NOT NULL,
-  `contact_person_patient_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`tel_no`, `contact_person_id`, `contact_person_patient_id`),
+  `contact_person_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`tel_no`, `contact_person_id`),
   CONSTRAINT `fk_contact_person_tel_contact_person1`
-    FOREIGN KEY (`contact_person_id` , `contact_person_patient_id`)
-    REFERENCES `Ygeiopolis_db`.`contact_person` (`id` , `patient_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    FOREIGN KEY (`contact_person_id`)
+    REFERENCES `Ygeiopolis_db`.`contact_person` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX `fk_contact_person_tel_contact_person1_idx` ON `Ygeiopolis_db`.`contact_person_tel` (`contact_person_id` ASC, `contact_person_patient_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_contact_person_tel_contact_person1_idx` ON `Ygeiopolis_db`.`contact_person_tel` (`contact_person_id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -930,9 +991,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`patient_img` (
   CONSTRAINT `fk_patient_img_patient`
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
-    )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`patient_img` (`image_url` ASC) VISIBLE;
 
@@ -950,9 +1012,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_img` (
   CONSTRAINT `fk_staff_img_staff`
     FOREIGN KEY (`staff_id`)
     REFERENCES `Ygeiopolis_db`.`staff` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
-    )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`staff_img` (`image_url` ASC) VISIBLE;
 
@@ -970,9 +1033,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`clinical_room_img` (
   CONSTRAINT `fk_clin_room_img_clin_room`
     FOREIGN KEY (`clin_room_id`)
     REFERENCES `Ygeiopolis_db`.`clinical_room` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE UNIQUE INDEX `image_url_UNIQUE` ON `Ygeiopolis_db`.`clinical_room_img` (`image_url` ASC) VISIBLE;
 
@@ -989,14 +1053,14 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`exam_doc` (
   CONSTRAINT `fk_exam_doc_med_proc1`
     FOREIGN KEY (`med_proc_id`)
     REFERENCES `Ygeiopolis_db`.`med_proc` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_exam_doc_doctor1`
     FOREIGN KEY (`doctor_id`)
     REFERENCES `Ygeiopolis_db`.`doctor` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE INDEX `fk_exam_doc_doctor1_idx` ON `Ygeiopolis_db`.`exam_doc` (`doctor_id` ASC) VISIBLE;
 
@@ -1013,14 +1077,14 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`exam_nurse` (
   CONSTRAINT `fk_exam_nurse_med_proc1`
     FOREIGN KEY (`med_proc_id`)
     REFERENCES `Ygeiopolis_db`.`med_proc` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_exam_nurse_nurse1`
     FOREIGN KEY (`nurse_id`)
     REFERENCES `Ygeiopolis_db`.`nurse` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE INDEX `fk_exam_nurse_nurse1_idx` ON `Ygeiopolis_db`.`exam_nurse` (`nurse_id` ASC) VISIBLE;
 
@@ -1043,8 +1107,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`admission_diag` (
     FOREIGN KEY (`hosp_entry_code`)
     REFERENCES `Ygeiopolis_db`.`hosp_entry` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_admission_diag_idc101_idx` ON `Ygeiopolis_db`.`admission_diag` (`hosp_entry_code` ASC) VISIBLE;
 
@@ -1067,8 +1132,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`discharge_diag` (
     FOREIGN KEY (`hosp_entry_code`)
     REFERENCES `Ygeiopolis_db`.`hosp_entry` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_discharge_diag_idc101_idx` ON `Ygeiopolis_db`.`discharge_diag` (`hosp_entry_code` ASC) VISIBLE;
 
@@ -1091,8 +1157,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`assigned_ken` (
     FOREIGN KEY (`KEN_code`)
     REFERENCES `Ygeiopolis_db`.`KEN` (`code`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_assigned_ken_KEN1_idx` ON `Ygeiopolis_db`.`assigned_ken` (`KEN_code` ASC) VISIBLE;
 
@@ -1109,14 +1176,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doc_belongs` (
   CONSTRAINT `fk_doc_belongs_department1`
     FOREIGN KEY (`department_id`)
     REFERENCES `Ygeiopolis_db`.`department` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_doc_belongs_doctor1`
     FOREIGN KEY (`doctor_id`)
     REFERENCES `Ygeiopolis_db`.`doctor` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_doc_belongs_doctor1_idx` ON `Ygeiopolis_db`.`doc_belongs` (`doctor_id` ASC) VISIBLE;
 
@@ -1133,14 +1201,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`has_insurance` (
   CONSTRAINT `fk_has_insurance_patient1`
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_has_insurance_insurance_provider1`
     FOREIGN KEY (`insurance_provider_id`)
     REFERENCES `Ygeiopolis_db`.`insurance_provider` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_has_insurance_insurance_provider1_idx` ON `Ygeiopolis_db`.`has_insurance` (`insurance_provider_id` ASC) VISIBLE;
 
@@ -1157,14 +1226,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`is_allergic` (
   CONSTRAINT `fk_is_allergic_patient1`
     FOREIGN KEY (`patient_id`)
     REFERENCES `Ygeiopolis_db`.`patient` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_is_allergic_active_substance1`
     FOREIGN KEY (`active_substance_id`)
     REFERENCES `Ygeiopolis_db`.`active_substance` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_is_allergic_active_substance1_idx` ON `Ygeiopolis_db`.`is_allergic` (`active_substance_id` ASC) VISIBLE;
 
@@ -1182,13 +1252,14 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`contains` (
     FOREIGN KEY (`active_substance_id`)
     REFERENCES `Ygeiopolis_db`.`active_substance` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_contains_medication1`
     FOREIGN KEY (`medication_id`)
     REFERENCES `Ygeiopolis_db`.`medication` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_contains_medication1_idx` ON `Ygeiopolis_db`.`contains` (`medication_id` ASC) VISIBLE;
 
@@ -1205,14 +1276,15 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`help` (
   CONSTRAINT `fk_help_surgery1`
     FOREIGN KEY (`surgery_id`)
     REFERENCES `Ygeiopolis_db`.`surgery` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_help_staff1`
     FOREIGN KEY (`staff_id`)
     REFERENCES `Ygeiopolis_db`.`staff` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_help_staff1_idx` ON `Ygeiopolis_db`.`help` (`staff_id` ASC) VISIBLE;
 
@@ -1235,8 +1307,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`doctor_shift` (
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
     ON DELETE CASCADE 
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_doctor_shift_shift1_idx` ON `Ygeiopolis_db`.`doctor_shift` (`shift_id` ASC) VISIBLE;
 
@@ -1259,8 +1332,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`nurse_shift` (
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_nurse_shift_shift1_idx` ON `Ygeiopolis_db`.`nurse_shift` (`shift_id` ASC) VISIBLE;
 
@@ -1283,8 +1357,9 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`admin_shift` (
     FOREIGN KEY (`shift_id`)
     REFERENCES `Ygeiopolis_db`.`shift` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_admin_shift_admin_staff1_idx` ON `Ygeiopolis_db`.`admin_shift` (`admin_staff_id` ASC) VISIBLE;
 
@@ -1306,12 +1381,13 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_absence` (
   CONSTRAINT `fk_staff_absence_staff1`
     FOREIGN KEY (`staff_id`)
     REFERENCES `Ygeiopolis_db`.`staff` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
     
   CONSTRAINT `chk_absence_dates` CHECK (end_time IS NULL OR end_time > start_time),
   CONSTRAINT `chk_absence_reason` CHECK (reason IN ('Annual Leave', 'Sick Leave', 'Other', 'Permanent Leave'))
-  )ENGINE = InnoDB;
+  ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX `fk_staff_absence_staff1_idx` ON `Ygeiopolis_db`.`staff_absence` (`staff_id` ASC) VISIBLE;
 
@@ -1327,9 +1403,10 @@ CREATE TABLE IF NOT EXISTS `Ygeiopolis_db`.`staff_tel` (
   CONSTRAINT `fk_staff_tel_staff1`
     FOREIGN KEY (`staff_id`)
     REFERENCES `Ygeiopolis_db`.`staff` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+    ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- ==============================================
 -- INDEXES
@@ -1339,7 +1416,7 @@ CREATE INDEX idx_hosp_bed_time
 ON hospitalization (bed_no, bed_dept_id, admission_date, discharge_date);
 
 CREATE UNIQUE INDEX uq_shift_dept_day_type 
-ON shift (dept_id, DATE(start_time), type);
+ON shift (dept_id, (DATE(start_time)), type);
 
 CREATE INDEX idx_exam_doc_doctor_medproc
 ON exam_doc (doctor_id, med_proc_id);
@@ -1349,6 +1426,15 @@ ON lab_exam (doctor_id, hospitalization_id);
 
 CREATE INDEX idx_surgery_doctor_hosp
 ON surgery (doctor_id, hospitalization_id);
+
+CREATE INDEX idx_surgery_doctor_start
+ON surgery (doctor_id, start_time);
+
+CREATE INDEX idx_doctor_shift_doctor_shift
+ON doctor_shift (doctor_id, shift_id);
+
+CREATE INDEX idx_shift_start_id
+ON shift (start_time, id);
 
 -- ==============================================
 -- TRIGGERS
@@ -1368,6 +1454,76 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- triage service time
+
+DELIMITER $$
+CREATE TRIGGER trg_service_time
+BEFORE INSERT ON triage_entry
+FOR EACH ROW
+BEGIN
+    IF NEW.service_time > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Service time cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- triage arrival_time
+
+DELIMITER $$
+CREATE TRIGGER trg_triage_arrival_time
+BEFORE INSERT ON triage_entry
+FOR EACH ROW
+BEGIN
+    IF NEW.arrival_time > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Arrival time cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- hospitalization admission_date
+
+DELIMITER $$
+CREATE TRIGGER trg_hospitalization_admission_date
+BEFORE INSERT ON hospitalization
+FOR EACH ROW
+BEGIN
+    IF NEW.admission_date > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admission date cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- lab exam date
+
+DELIMITER $$
+CREATE TRIGGER trg_lab_exam_date
+BEFORE INSERT ON lab_exam
+FOR EACH ROW
+BEGIN
+    IF NEW.date > NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Lab exam date cannot be in the future';
+    END IF;
+END$$
+DELIMITER ;
+
+-- prescription date
+
+DELIMITER $$
+CREATE TRIGGER trg_prescription_pres_day
+BEFORE INSERT ON prescription
+FOR EACH ROW
+BEGIN
+    IF NEW.pres_day > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prescription date cannot be in the future';
+    END IF;
+END$$
+
+DELIMITER ;
 
 -- doctor
 -- staff_type of corresponding staff must be Doctor
@@ -1657,61 +1813,6 @@ END$$
 
 DELIMITER ;
 
--- triage arrival_time
-DELIMITER $$
-CREATE TRIGGER trg_triage_arrival_time
-BEFORE INSERT ON triage_entry
-FOR EACH ROW
-BEGIN
-    IF NEW.arrival_time > NOW() THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Arrival time cannot be in the future';
-    END IF;
-END$$
-DELIMITER ;
-
--- hospitalization admission_date
-
-DELIMITER $$
-CREATE TRIGGER trg_hospitalization_admission_date
-BEFORE INSERT ON hospitalization
-FOR EACH ROW
-BEGIN
-    IF NEW.admission_date > NOW() THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Admission date cannot be in the future';
-    END IF;
-END$$
-DELIMITER ;
-
--- lab exam date
-
-DELIMITER $$
-CREATE TRIGGER trg_lab_exam_date
-BEFORE INSERT ON lab_exam
-FOR EACH ROW
-BEGIN
-    IF NEW.date > NOW() THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Lab exam date cannot be in the future';
-    END IF;
-END$$
-DELIMITER ;
-
--- prescription date
-
-DELIMITER $$
-CREATE TRIGGER trg_prescription_pres_day
-BEFORE INSERT ON prescription
-FOR EACH ROW
-BEGIN
-    IF NEW.pres_day > CURDATE() THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Prescription date cannot be in the future';
-    END IF;
-END$$
-
-DELIMITER ;
 
 -- hospitalization can be evaluated only when completed
 
@@ -1735,7 +1836,7 @@ DELIMITER ;
 
 
 -- shift constraints for staff
--- monthly limits
+-- department checks
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_nurse_shift_dept_check $$
@@ -1804,6 +1905,8 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- monthly limits and absences
+
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_doctor_shift_monthly_limit $$
 CREATE TRIGGER trg_doctor_shift_monthly_limit
@@ -1815,7 +1918,6 @@ BEGIN
     DECLARE v_shift_start DATETIME;
     DECLARE v_shift_end   DATETIME;
 
-    -- Get shift date, start and end
     SELECT DATE(start_time), start_time, end_time
     INTO v_shift_date, v_shift_start, v_shift_end
     FROM shift
@@ -1860,7 +1962,6 @@ BEGIN
     DECLARE v_shift_start DATETIME;
     DECLARE v_shift_end   DATETIME;
 
-    -- Get shift date, start and end
     SELECT DATE(start_time), start_time, end_time
     INTO v_shift_date, v_shift_start, v_shift_end
     FROM shift
@@ -1905,7 +2006,6 @@ BEGIN
     DECLARE v_shift_start DATETIME;
     DECLARE v_shift_end   DATETIME;
 
-    -- Get shift date, start and end
     SELECT DATE(start_time), start_time, end_time
     INTO v_shift_date, v_shift_start, v_shift_end
     FROM shift
@@ -1975,6 +2075,7 @@ END$$
 DELIMITER ;
 
 -- 8h rest nurse
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS trg_nurse_shift_rest $$
@@ -2058,13 +2159,11 @@ BEGIN
     DECLARE v_shift_date DATE;
     DECLARE v_violation  INT DEFAULT 0;
 
-    -- Get type and date of the new shift
     SELECT s.type, DATE(s.start_time)
     INTO v_shift_type, v_shift_date
     FROM shift s
     WHERE s.id = NEW.shift_id;
 
-    -- Only check if the new shift is a night shift
     IF v_shift_type = 'Night' THEN
 
         -- Pattern 1: D-3, D-2, D-1, D(new)
@@ -2193,13 +2292,11 @@ BEGIN
     DECLARE v_shift_date DATE;
     DECLARE v_violation  INT DEFAULT 0;
 
-    -- Get type and date of the new shift
     SELECT s.type, DATE(s.start_time)
     INTO v_shift_type, v_shift_date
     FROM shift s
     WHERE s.id = NEW.shift_id;
 
-    -- Only check if the new shift is a night shift
     IF v_shift_type = 'Night' THEN
 
         -- Pattern 1: D-3, D-2, D-1, D(new)
@@ -2328,13 +2425,11 @@ BEGIN
     DECLARE v_shift_date DATE;
     DECLARE v_violation  INT DEFAULT 0;
 
-    -- Get type and date of the new shift
     SELECT s.type, DATE(s.start_time)
     INTO v_shift_type, v_shift_date
     FROM shift s
     WHERE s.id = NEW.shift_id;
 
-    -- Only check if the new shift is a night shift
     IF v_shift_type = 'Night' THEN
 
         -- Pattern 1: D-3, D-2, D-1, D(new)
@@ -2450,44 +2545,10 @@ END$$
 
 DELIMITER ;
 
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_doctor_shift_no_update $$
-CREATE TRIGGER trg_doctor_shift_no_update
-BEFORE UPDATE ON doctor_shift
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Updates on doctor_shift are not allowed. Use DELETE and INSERT instead.';
-END$$
-DELIMITER ;
-
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_nurse_shift_no_update $$
-CREATE TRIGGER trg_nurse_shift_no_update
-BEFORE UPDATE ON nurse_shift
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Updates on nurse_shift are not allowed. Use DELETE and INSERT instead.';
-END$$
-DELIMITER ;
-
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_admin_shift_no_update $$
-CREATE TRIGGER trg_admin_shift_no_update
-BEFORE UPDATE ON admin_shift
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Updates on admin_shift are not allowed. Use DELETE and INSERT instead.';
-END$$
-DELIMITER ;
-
 -- surgery
 
 DELIMITER $$
+
 DROP TRIGGER IF EXISTS trg_surgery_before_insert $$
 CREATE TRIGGER trg_surgery_before_insert
 BEFORE INSERT ON surgery
@@ -2504,8 +2565,15 @@ BEGIN
     -- Calculate surgery estimated end datetime based on start time and duration
     SET v_new_end = DATE_ADD(NEW.start_time, INTERVAL NEW.duration MINUTE);
 
-    -- On insert, operating room must not be under maintenance
-    SELECT status, type INTO v_room_status, v_room_type
+    -- Finalized surgery must have hospitalization
+    IF NEW.is_finalized = 1 AND NEW.hospitalization_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Surgery insert failed: finalized surgery must have a hospitalization.';
+    END IF;
+
+    -- Operating room must exist and must not be under maintenance
+    SELECT status, type
+    INTO v_room_status, v_room_type
     FROM operating_room
     WHERE id = NEW.operating_room_id;
 
@@ -2514,55 +2582,69 @@ BEGIN
         SET MESSAGE_TEXT = 'Surgery insert failed: operating room is under maintenance.';
     END IF;
 
-    -- On insert, surgery start and end must fall within the hospitalization admission and discharge dates
-    SELECT admission_date, discharge_date
-    INTO v_hosp_admission, v_hosp_discharge
-    FROM hospitalization
-    WHERE id = NEW.hospitalization_id;
-
-    IF NEW.start_time < v_hosp_admission THEN
+    -- If hospitalization is given, it must belong to the same patient
+    IF NEW.hospitalization_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1
+        FROM hospitalization h
+        WHERE h.id = NEW.hospitalization_id
+          AND h.patient_id = NEW.patient_id
+    ) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot start before hospitalization admission.';
+        SET MESSAGE_TEXT = 'Surgery insert failed: hospitalization does not belong to the same patient.';
     END IF;
 
-    IF v_hosp_discharge IS NOT NULL AND v_new_end > v_hosp_discharge THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot end after hospitalization discharge.';
+    -- If hospitalization is given, surgery must fall within hospitalization dates
+    IF NEW.hospitalization_id IS NOT NULL THEN
+        SELECT admission_date, discharge_date
+        INTO v_hosp_admission, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF NEW.start_time < v_hosp_admission THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot start before hospitalization admission.';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL AND v_new_end > v_hosp_discharge THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Surgery insert failed: surgery cannot end after hospitalization discharge.';
+        END IF;
     END IF;
 
-    -- On insert, no other surgery can overlap in the same operating room at the same time
+    -- No other surgery can overlap in the same operating room
     SELECT COUNT(*) INTO v_room_overlap
     FROM surgery s
     WHERE s.operating_room_id = NEW.operating_room_id
       AND NEW.start_time < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
-      AND s.start_time   < v_new_end;
+      AND s.start_time < v_new_end;
 
     IF v_room_overlap > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Surgery insert failed: overlapping surgery in the same operating room is not allowed.';
     END IF;
 
-    -- On insert, the same doctor cannot be the primary surgeon in two surgeries that overlap in time
+    -- The same doctor cannot be primary surgeon in overlapping surgeries
     SELECT COUNT(*) INTO v_doctor_overlap
     FROM surgery s
-    WHERE s.doctor_id    = NEW.doctor_id
+    WHERE s.doctor_id = NEW.doctor_id
       AND NEW.start_time < DATE_ADD(s.start_time, INTERVAL s.duration MINUTE)
-      AND s.start_time   < v_new_end;
+      AND s.start_time < v_new_end;
 
     IF v_doctor_overlap > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Surgery insert failed: doctor cannot perform overlapping surgeries.';
     END IF;
 
-    -- On insert, doctor must not be absent during the surgery
+    -- Doctor must not be absent during the surgery
     IF EXISTS (
-        SELECT 1 FROM staff_absence sa
+        SELECT 1
+        FROM staff_absence sa
         WHERE sa.staff_id = NEW.doctor_id
           AND sa.start_time < v_new_end
           AND (sa.end_time IS NULL OR sa.end_time > NEW.start_time)
     ) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Surgery insert failed: doctor was absent during this period';
+        SET MESSAGE_TEXT = 'Surgery insert failed: doctor was absent during this period.';
     END IF;
 
 END$$
@@ -2670,6 +2752,8 @@ END$$
 
 DELIMITER ;
 
+-- hospitalization
+
 DELIMITER $$
 CREATE TRIGGER trg_hospitalization_before_insert
 BEFORE INSERT ON hospitalization
@@ -2732,7 +2816,7 @@ DO
     END
     WHERE b.status != 'Under Maintenance';
 
--- shift constraints 
+-- shift hours' constraints 
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_shift_before_insert $$
@@ -2756,6 +2840,8 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+-- shift min staff and attending requirements
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_shift_min_staff_on_finalize $$
@@ -2813,6 +2899,8 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+-- finalized shifts
 
 DELIMITER $$
 
@@ -2968,6 +3056,7 @@ END$$
 DELIMITER ;
 
 -- prescription
+-- allergies
 
 DELIMITER $$
 
@@ -3002,50 +3091,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_staff_no_delete $$
-CREATE TRIGGER trg_staff_no_delete
-BEFORE DELETE ON staff
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Deletion of staff members is not allowed. See staff_absence.';
-END$$
-DELIMITER ;
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_doctor_no_delete $$
-CREATE TRIGGER trg_doctor_no_delete
-BEFORE DELETE ON doctor
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Deletion of doctors is not allowed. See staff_absence.';
-END$$
-DELIMITER ;
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_nurse_no_delete $$
-CREATE TRIGGER trg_nurse_no_delete
-BEFORE DELETE ON nurse
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Deletion of nurses is not allowed. See staff_absence.';
-END$$
-DELIMITER ;
-
-DELIMITER $$
-DROP TRIGGER IF EXISTS trg_admin_staff_no_delete $$
-CREATE TRIGGER trg_admin_staff_no_delete
-BEFORE DELETE ON admin_staff
-FOR EACH ROW
-BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Deletion of admin staff is not allowed. See staff_absence.';
-END$$
-DELIMITER ;
+-- department directors
 
 DELIMITER $$
 
@@ -3057,8 +3103,7 @@ BEGIN
     DECLARE v_grade VARCHAR(45);
     DECLARE v_count INT DEFAULT 0;
 
-    -- Ο γιατρός που μπαίνει ως director του department
-    -- πρέπει να έχει grade = 'Director'
+    -- director grade must be  = 'Director'
     SELECT dg.name
     INTO v_grade
     FROM doctor d
@@ -3070,8 +3115,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Department director must be a doctor with grade Director';
     END IF;
 
-    -- Extra assumption:
-    -- Ο ίδιος doctor δεν μπορεί να είναι director σε περισσότερα από 1 departments
+    -- A doctor cannot direct more than one departments
     SELECT COUNT(*)
     INTO v_count
     FROM department dep
@@ -3141,7 +3185,6 @@ BEGIN
     DECLARE v_surgery_duration SMALLINT UNSIGNED;
     DECLARE v_staff_type       VARCHAR(45);
 
-    -- Get surgery details
     SELECT doctor_id, start_time, duration
     INTO v_primary_doctor, v_surgery_start, v_surgery_duration
     FROM surgery
@@ -3279,32 +3322,45 @@ END$$
 DELIMITER ;
 
 
+-- Validates that, when a prescription is linked to a hospitalization,
+-- the patient matches that hospitalization and the prescription date
+-- is not later than the discharge date.
+
 DELIMITER $$
+
 DROP TRIGGER IF EXISTS trg_prescription_hospitalization_check $$
 CREATE TRIGGER trg_prescription_hospitalization_check
 BEFORE INSERT ON prescription
 FOR EACH ROW
 BEGIN
+
     DECLARE v_hosp_patient_id INT UNSIGNED;
-    DECLARE v_hosp_discharge  DATETIME;
+    DECLARE v_hosp_discharge DATETIME;
 
-    SELECT patient_id, discharge_date
-    INTO v_hosp_patient_id, v_hosp_discharge
-    FROM hospitalization
-    WHERE id = NEW.hospitalization_id;
+    IF NEW.hospitalization_id IS NOT NULL THEN
 
-    IF v_hosp_patient_id <> NEW.patient_id THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Prescription failed: patient does not match hospitalization';
+        SELECT patient_id, discharge_date
+        INTO v_hosp_patient_id, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF v_hosp_patient_id <> NEW.patient_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Prescription failed: patient does not match hospitalization';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL
+           AND NEW.pres_day > DATE(v_hosp_discharge) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Prescription failed: prescription date is after discharge';
+        END IF;
+
     END IF;
+END $$
 
-    IF v_hosp_discharge IS NOT NULL 
-       AND NEW.pres_day > DATE(v_hosp_discharge) THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Prescription failed: prescription date is after discharge';
-    END IF;
-END$$
 DELIMITER ;
+
+-- triage entries must come from the emergency department
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_triage_dept_check $$
@@ -3323,6 +3379,413 @@ BEGIN
         SET MESSAGE_TEXT = 'Triage entry must belong to the Emergency department';
     END IF;
 END$$
+DELIMITER ;
+
+
+-- total cost calculation
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS trg_hospitalization_calc_cost $$
+CREATE TRIGGER trg_hospitalization_calc_cost
+BEFORE UPDATE ON hospitalization
+FOR EACH ROW
+BEGIN
+    DECLARE v_surgery_cost   DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_lab_cost       DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_proc_cost      DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_ken_cost       DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_ken_base       DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_ken_mdh        SMALLINT UNSIGNED DEFAULT 0;
+    DECLARE v_ken_daily      DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_actual_days    INT DEFAULT 0;
+    DECLARE v_extra_days     INT DEFAULT 0;
+
+    IF OLD.discharge_date IS NULL AND NEW.discharge_date IS NOT NULL THEN
+
+        SELECT COALESCE(SUM(cost), 0)
+        INTO v_surgery_cost
+        FROM surgery
+        WHERE hospitalization_id = NEW.id;
+
+        SELECT COALESCE(SUM(cost), 0)
+        INTO v_lab_cost
+        FROM lab_exam
+        WHERE hospitalization_id = NEW.id;
+
+        SELECT COALESCE(SUM(cost), 0)
+        INTO v_proc_cost
+        FROM med_proc
+        WHERE hospitalization_id = NEW.id;
+
+        SELECT COALESCE(SUM(k.base_cost), 0),
+               COALESCE(MAX(k.mdh), 0),
+               COALESCE(MAX(k.daily_extra_charge), 0)
+        INTO v_ken_base, v_ken_mdh, v_ken_daily
+        FROM assigned_ken ak
+        JOIN KEN k ON ak.KEN_code = k.code
+        WHERE ak.hospitalization_id = NEW.id;
+
+        SET v_actual_days = DATEDIFF(DATE(NEW.discharge_date), DATE(NEW.admission_date));
+
+        SET v_extra_days = GREATEST(0, v_actual_days - v_ken_mdh);
+
+        SET v_ken_cost = v_ken_base + (v_extra_days * v_ken_daily);
+
+        SET NEW.total_cost = v_surgery_cost + v_lab_cost + v_proc_cost + v_ken_cost;
+
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_surgery_restrict_update_if_finalized $$
+CREATE TRIGGER trg_surgery_restrict_update_if_finalized
+BEFORE UPDATE ON surgery
+FOR EACH ROW
+BEGIN
+    -- Prevents modification of hospitalization_id, start_time, and duration
+    -- once a surgery has been finalized.
+
+    IF OLD.is_finalized = 1 THEN
+        IF NOT (NEW.hospitalization_id <=> OLD.hospitalization_id)
+           OR NEW.start_time <> OLD.start_time
+           OR NEW.duration <> OLD.duration THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Update failed: cannot modify hospitalization_id, start_time or duration of a finalized surgery';
+        END IF;
+    END IF;
+END $$
+
+DELIMITER ;
+
+-- LAB EXAM: hospitalization consistency + doctor absence
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_lab_exam_before_insert $$
+CREATE TRIGGER trg_lab_exam_before_insert
+BEFORE INSERT ON lab_exam
+FOR EACH ROW
+BEGIN
+    DECLARE v_hosp_patient_id INT UNSIGNED;
+    DECLARE v_hosp_admission  DATETIME;
+    DECLARE v_hosp_discharge  DATETIME;
+
+    -- If a hospitalization is linked, it must belong to the same patient
+    -- and the lab exam datetime must fall within the hospitalization period.
+    IF NEW.hospitalization_id IS NOT NULL THEN
+        SELECT patient_id, admission_date, discharge_date
+        INTO v_hosp_patient_id, v_hosp_admission, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF v_hosp_patient_id <> NEW.patient_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam insert failed: hospitalization does not belong to the same patient';
+        END IF;
+
+        IF NEW.date < v_hosp_admission THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam insert failed: exam date is before hospitalization admission';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL AND NEW.date > v_hosp_discharge THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam insert failed: exam date is after hospitalization discharge';
+        END IF;
+    END IF;
+
+    -- The doctor assigned to the lab exam must not be absent at exam time.
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time <= NEW.date
+          AND (sa.end_time IS NULL OR sa.end_time > NEW.date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Lab exam insert failed: doctor is absent at exam time';
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_lab_exam_before_update $$
+CREATE TRIGGER trg_lab_exam_before_update
+BEFORE UPDATE ON lab_exam
+FOR EACH ROW
+BEGIN
+    DECLARE v_hosp_patient_id INT UNSIGNED;
+    DECLARE v_hosp_admission  DATETIME;
+    DECLARE v_hosp_discharge  DATETIME;
+
+    -- If a hospitalization is linked, it must belong to the same patient
+    -- and the lab exam datetime must fall within the hospitalization period.
+    IF NEW.hospitalization_id IS NOT NULL THEN
+        SELECT patient_id, admission_date, discharge_date
+        INTO v_hosp_patient_id, v_hosp_admission, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF v_hosp_patient_id <> NEW.patient_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam update failed: hospitalization does not belong to the same patient';
+        END IF;
+
+        IF NEW.date < v_hosp_admission THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam update failed: exam date is before hospitalization admission';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL AND NEW.date > v_hosp_discharge THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Lab exam update failed: exam date is after hospitalization discharge';
+        END IF;
+    END IF;
+
+    -- The doctor assigned to the lab exam must not be absent at exam time.
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time <= NEW.date
+          AND (sa.end_time IS NULL OR sa.end_time > NEW.date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Lab exam update failed: doctor is absent at exam time';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- MED PROC: hospitalization consistency
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_med_proc_before_insert $$
+CREATE TRIGGER trg_med_proc_before_insert
+BEFORE INSERT ON med_proc
+FOR EACH ROW
+BEGIN
+    DECLARE v_hosp_patient_id INT UNSIGNED;
+    DECLARE v_hosp_admission  DATETIME;
+    DECLARE v_hosp_discharge  DATETIME;
+
+    -- If a hospitalization is linked, it must belong to the same patient
+    -- and the procedure datetime must fall within the hospitalization period.
+    IF NEW.hospitalization_id IS NOT NULL THEN
+        SELECT patient_id, admission_date, discharge_date
+        INTO v_hosp_patient_id, v_hosp_admission, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF v_hosp_patient_id <> NEW.patient_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure insert failed: hospitalization does not belong to the same patient';
+        END IF;
+
+        IF NEW.date < v_hosp_admission THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure insert failed: procedure date is before hospitalization admission';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL AND NEW.date > v_hosp_discharge THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure insert failed: procedure date is after hospitalization discharge';
+        END IF;
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_med_proc_before_update $$
+CREATE TRIGGER trg_med_proc_before_update
+BEFORE UPDATE ON med_proc
+FOR EACH ROW
+BEGIN
+    DECLARE v_hosp_patient_id INT UNSIGNED;
+    DECLARE v_hosp_admission  DATETIME;
+    DECLARE v_hosp_discharge  DATETIME;
+
+    -- If a hospitalization is linked, it must belong to the same patient
+    -- and the procedure datetime must fall within the hospitalization period.
+    IF NEW.hospitalization_id IS NOT NULL THEN
+        SELECT patient_id, admission_date, discharge_date
+        INTO v_hosp_patient_id, v_hosp_admission, v_hosp_discharge
+        FROM hospitalization
+        WHERE id = NEW.hospitalization_id;
+
+        IF v_hosp_patient_id <> NEW.patient_id THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure update failed: hospitalization does not belong to the same patient';
+        END IF;
+
+        IF NEW.date < v_hosp_admission THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure update failed: procedure date is before hospitalization admission';
+        END IF;
+
+        IF v_hosp_discharge IS NOT NULL AND NEW.date > v_hosp_discharge THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Medical procedure update failed: procedure date is after hospitalization discharge';
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- MED PROC PARTICIPANTS: absence checks
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_exam_doc_before_insert $$
+CREATE TRIGGER trg_exam_doc_before_insert
+BEFORE INSERT ON exam_doc
+FOR EACH ROW
+BEGIN
+    DECLARE v_proc_date DATETIME;
+
+    -- A doctor assigned to a medical procedure must not be absent at procedure time.
+    SELECT mp.date
+    INTO v_proc_date
+    FROM med_proc mp
+    WHERE mp.id = NEW.med_proc_id;
+
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time <= v_proc_date
+          AND (sa.end_time IS NULL OR sa.end_time > v_proc_date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medical procedure doctor insert failed: doctor is absent at procedure time';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_exam_doc_before_update $$
+CREATE TRIGGER trg_exam_doc_before_update
+BEFORE UPDATE ON exam_doc
+FOR EACH ROW
+BEGIN
+    DECLARE v_proc_date DATETIME;
+
+    -- A doctor assigned to a medical procedure must not be absent at procedure time.
+    SELECT mp.date
+    INTO v_proc_date
+    FROM med_proc mp
+    WHERE mp.id = NEW.med_proc_id;
+
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.doctor_id
+          AND sa.start_time <= v_proc_date
+          AND (sa.end_time IS NULL OR sa.end_time > v_proc_date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medical procedure doctor update failed: doctor is absent at procedure time';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_exam_nurse_before_insert $$
+CREATE TRIGGER trg_exam_nurse_before_insert
+BEFORE INSERT ON exam_nurse
+FOR EACH ROW
+BEGIN
+    DECLARE v_proc_date DATETIME;
+
+    -- A nurse assigned to a medical procedure must not be absent at procedure time.
+    SELECT mp.date
+    INTO v_proc_date
+    FROM med_proc mp
+    WHERE mp.id = NEW.med_proc_id;
+
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.nurse_id
+          AND sa.start_time <= v_proc_date
+          AND (sa.end_time IS NULL OR sa.end_time > v_proc_date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medical procedure nurse insert failed: nurse is absent at procedure time';
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_exam_nurse_before_update $$
+CREATE TRIGGER trg_exam_nurse_before_update
+BEFORE UPDATE ON exam_nurse
+FOR EACH ROW
+BEGIN
+    DECLARE v_proc_date DATETIME;
+
+    -- A nurse assigned to a medical procedure must not be absent at procedure time.
+    SELECT mp.date
+    INTO v_proc_date
+    FROM med_proc mp
+    WHERE mp.id = NEW.med_proc_id;
+
+    IF EXISTS (
+        SELECT 1
+        FROM staff_absence sa
+        WHERE sa.staff_id = NEW.nurse_id
+          AND sa.start_time <= v_proc_date
+          AND (sa.end_time IS NULL OR sa.end_time > v_proc_date)
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Medical procedure nurse update failed: nurse is absent at procedure time';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- ages
+
+DELIMITER $$
+
+CREATE EVENT evt_update_ages
+ON SCHEDULE EVERY 1 YEAR
+STARTS '2026-01-01 00:00:00'
+DO BEGIN
+  UPDATE patient SET age = TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE());
+  UPDATE staff SET age = TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE());
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_patient_age_insert
+BEFORE INSERT ON patient
+FOR EACH ROW
+SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_of_birth, CURDATE())$$
+
+CREATE TRIGGER trg_patient_age_update
+BEFORE UPDATE ON patient
+FOR EACH ROW
+SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_of_birth, CURDATE())$$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_staff_age_insert
+BEFORE INSERT ON staff
+FOR EACH ROW
+SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_of_birth, CURDATE())$$
+
+CREATE TRIGGER trg_staff_age_update
+BEFORE UPDATE ON staff
+FOR EACH ROW
+SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_of_birth, CURDATE())$$
 DELIMITER ;
 
 
