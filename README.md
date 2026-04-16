@@ -113,7 +113,7 @@ API_URL=http://localhost:3000
 
 **Windows (MySQL Command Line Client):**
 ```sql
-SOURCE C:/path/to/ygeiopolis/sql/loadl.sql;
+SOURCE C:/path/to/ygeiopolis/sql/load.sql;
 ```
 
 **Linux:**
@@ -121,8 +121,11 @@ SOURCE C:/path/to/ygeiopolis/sql/loadl.sql;
 mysql -u root -p < sql/load.sql
 ```
 ## Εναλλακτικά:
-
-
+```bash
+cd code
+pip install mysql-connector-python python-dotenv
+python dump_to_sql.py --password yourpassword
+```
 ---
 
 ### Βήμα 4 - Εκκίνηση Backend
