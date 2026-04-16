@@ -38,4 +38,4 @@ ORDER BY
     pc.pair_count DESC,
     a1.name ASC,
     a2.name ASC
-LIMIT 3
+LIMIT 3;
