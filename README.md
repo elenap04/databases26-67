@@ -16,7 +16,9 @@
 
 ```
 ygeiopolis/
-├── backend/
+
+├── code/
+|   ├── backend/
 │   ├── .env
 │   ├── server.js
 │   ├── db.js
