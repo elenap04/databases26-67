@@ -2,7 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const pool    = require('../db');
 
-// GET /api/dashboard — συνολική επισκόπηση
+// GET /api/dashboard 
 router.get('/', async (req, res, next) => {
     try {
         // Στατιστικά προσωπικού
@@ -111,30 +111,6 @@ router.get('/', async (req, res, next) => {
             GROUP BY sh.id, sh.type, sh.start_time, sh.end_time, d.name
             ORDER BY d.name
         `);
-
-        // Triage queue ανά επίπεδο επείγοντος
-        /*const [triage_by_level] = await pool.query(`
-            SELECT
-                urg_level,
-                COUNT(*) AS count
-            FROM triage_entry
-            WHERE service_time IS NULL
-            GROUP BY urg_level
-            ORDER BY urg_level
-        `);*/
-
-        // Triage queue ανά επίπεδο επείγοντος — με ονόματα ασθενών
-/*const [triage_by_level] = await pool.query(`
-    SELECT
-        t.urg_level,
-        p.first_name,
-        p.last_name,
-        t.arrival_time
-    FROM triage_entry t
-    JOIN patient p ON p.id = t.patient_id
-    WHERE t.service_time IS NULL
-    ORDER BY t.urg_level ASC, t.arrival_time ASC
-`);*/
 
 const [triage_by_level] = await pool.query(`
     SELECT
