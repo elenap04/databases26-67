@@ -120,6 +120,8 @@ SOURCE C:/path/to/ygeiopolis/sql/loadl.sql;
 ```bash
 mysql -u root -p < sql/load.sql
 ```
+## Εναλλακτικά:
+
 
 ---
 
