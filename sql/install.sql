@@ -2904,6 +2904,22 @@ DELIMITER ;
 
 DELIMITER $$
 
+DROP TRIGGER IF EXISTS trg_shift_before_insert $$
+CREATE TRIGGER trg_shift_before_insert
+BEFORE INSERT ON shift
+FOR EACH ROW
+BEGIN
+    IF NEW.is_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Shift insert failed: cannot insert a finalized shift directly';
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
 DROP TRIGGER IF EXISTS trg_doctor_shift_no_delete_finalized $$
 CREATE TRIGGER trg_doctor_shift_no_delete_finalized
 BEFORE DELETE ON doctor_shift
@@ -3024,17 +3040,37 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_shift_before_delete $$
+CREATE TRIGGER trg_shift_before_delete
+BEFORE DELETE ON shift
+FOR EACH ROW
+BEGIN
+    IF OLD.is_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Shift delete failed: cannot delete a finalized shift';
+    END IF;
+END$$
+
+DELIMITER ;
 
 DELIMITER $$
-DROP TRIGGER IF EXISTS trg_shift_no_update $$
-CREATE TRIGGER trg_shift_no_update
+DROP TRIGGER IF EXISTS trg_shift_before_update $$
+CREATE TRIGGER trg_shift_before_update
 BEFORE UPDATE ON shift
 FOR EACH ROW
 BEGIN
-    -- Prevent updates on finalized shifts (except is_finalized itself)
+    -- Prevent any update on a finalized shift
     IF OLD.is_finalized = 1 AND NEW.is_finalized = 1 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Cannot update a finalized shift';
+    END IF;
+
+    -- Prevent un-finalizing a shift
+    IF OLD.is_finalized = 1 AND NEW.is_finalized = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot un-finalize a finalized shift';
     END IF;
 
     -- Prevent changes to start_time, end_time and type for all shifts
