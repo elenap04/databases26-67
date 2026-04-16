@@ -15,7 +15,7 @@ surgeries_this_year AS (
         sur.doctor_id,
         COUNT(*) AS surgeries_as_primary
     FROM surgery sur
-    WHERE YEAR(sh.start_time) = YEAR(CURDATE())
+    WHERE YEAR(sur.start_time) = YEAR(CURDATE())
     GROUP BY sur.doctor_id
 )
 SELECT
