@@ -18,6 +18,15 @@
 ```
 ygeiopolis/
 ├── code/
+|   ├── dump_to_sql.py
+│   ├── data/
+│   │   ├── hosp_entry_icd10.sql
+│   │   ├── mp_entryA.sql
+│   │   ├── mp_entryB.sql
+│   │   ├── ken_codes.csv
+│   │   ├── active_substances.csv
+│   │   ├── medications.csv
+│   │   └── contains_mapping.csv
 │   ├── backend/
 │   │   ├── .env
 │   │   ├── server.js
@@ -30,16 +39,8 @@ ygeiopolis/
 │       └── css/
 ├── sql/
 │   ├── install.sql
-│   ├── load_final.py
+│   ├── load.sql
 │   ├── .env
-│   ├── data/
-│   │   ├── hosp_entry_icd10.sql
-│   │   ├── mp_entryA.sql
-│   │   ├── mp_entryB.sql
-│   │   ├── ken_codes.csv
-│   │   ├── active_substances.csv
-│   │   ├── medications.csv
-│   │   └── contains_mapping.csv
 │   ├── Q01.sql ... Q15.sql
 │   └── Q01_out.txt ... Q15_out.txt
 ├── diagrams/
