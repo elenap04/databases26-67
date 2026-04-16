@@ -522,6 +522,66 @@ def load_patients(cursor):
     print(f"  Done ({time.time()-start:.1f}s)")
 
 
+# load photos
+
+def load_images(cursor):
+    print("  Loading images...")
+
+    BED_URL      = "https://images.unsplash.com/photo-1710074213379-2a9c2653046a"
+    DEPT_URL     = "https://plus.unsplash.com/premium_photo-1681400562562-86277737af9d"
+    OR_URL       = "https://plus.unsplash.com/premium_photo-1661889752049-44bb9f857e67"
+    PATIENT_URL  = "https://plus.unsplash.com/premium_photo-1769839239459-25501472f308"
+    STAFF_URL    = "https://plus.unsplash.com/premium_photo-1681996428751-93e0294fe98d"
+    CLIN_URL     = "https://images.unsplash.com/photo-1516549655169-df83a0774514"
+
+    # dept_img (15 departments)
+    _run(cursor, [
+        f"INSERT IGNORE INTO `dept_img` (`dept_id`,`image_url`,`description`) "
+        f"VALUES ({i},'{DEPT_URL}?id={i}','Department image')"
+        for i in range(1, 16)
+    ])
+
+    # bed_img — μία εικόνα ανά κλίνη
+    beds_config = {1:8, 2:7, 3:6, 4:6, 5:7, 6:5, 7:5, 8:6, 9:4, 10:5, 11:8, 12:5, 13:5, 14:4, 15:6}
+    bed_imgs = []
+    for dept, cnt in beds_config.items():
+        for bno in range(1, cnt + 1):
+            bed_imgs.append(
+                f"INSERT IGNORE INTO `bed_img` (`bed_no`,`dept_id`,`image_url`,`description`) "
+                f"VALUES ({bno},{dept},'{BED_URL}?dept={dept}&bed={bno}','Bed image')")
+    _run(cursor, bed_imgs)
+
+    # op_room_img (10 operating rooms)
+    _run(cursor, [
+        f"INSERT IGNORE INTO `op_room_img` (`op_room_id`,`image_url`,`description`) "
+        f"VALUES ({i},'{OR_URL}?id={i}','Operating room image')"
+        for i in range(1, 11)
+    ])
+
+    # clinical_room_img (7 clinical rooms)
+    _run(cursor, [
+        f"INSERT IGNORE INTO `clinical_room_img` (`clin_room_id`,`image_url`,`description`) "
+        f"VALUES ({i},'{CLIN_URL}?id={i}','Clinical room image')"
+        for i in range(1, 8)
+    ])
+
+    # patient_img (200 patients)
+    _run(cursor, [
+        f"INSERT IGNORE INTO `patient_img` (`patient_id`,`image_url`,`description`) "
+        f"VALUES ({i},'{PATIENT_URL}?id={i}','Patient photo')"
+        for i in range(1, 201)
+    ])
+
+    # staff_img (200 staff + id 200)
+    staff_ids = list(range(1, 171)) + [200]
+    _run(cursor, [
+        f"INSERT IGNORE INTO `staff_img` (`staff_id`,`image_url`,`description`) "
+        f"VALUES ({i},'{STAFF_URL}?id={i}','Staff photo')"
+        for i in staff_ids
+    ])
+
+    print("  Done")
+
 #  Step 3: Hospitalizations 
 
 def load_hospitalizations(cursor, ken_rows):
@@ -1197,6 +1257,11 @@ def main():
         if _sql_out: _sql_out.write("-- 6/10 Patients\n")
         load_patients(cursor)
         _commit("patients")
+
+        print("\n[Images] Loading images")
+        if _sql_out: _sql_out.write("-- Images\n")
+        load_images(cursor)
+        _commit("images")
 
         cursor.execute("SELECT code FROM `KEN` ORDER BY code")
         ken_rows = [r[0] for r in cursor.fetchall()]
