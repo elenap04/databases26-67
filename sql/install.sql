@@ -2816,7 +2816,7 @@ DO
     END
     WHERE b.status != 'Under Maintenance';
 
--- shift hours' constraints 
+-- shift hours' constraints (and is_finalized=0 on insert)
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS trg_shift_before_insert $$
@@ -2824,6 +2824,13 @@ CREATE TRIGGER trg_shift_before_insert
 BEFORE INSERT ON shift
 FOR EACH ROW
 BEGIN
+    -- Cannot insert finalized shift directly
+    IF NEW.is_finalized = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Shift insert failed: cannot insert a finalized shift directly';
+    END IF;
+
+    -- Enforce correct shift hours
     IF NEW.type = 'Morning'   AND (TIME(NEW.start_time) <> '07:00:00' OR TIME(NEW.end_time) <> '15:00:00') THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Morning shift must be 07:00-15:00';
@@ -2901,22 +2908,6 @@ END$$
 DELIMITER ;
 
 -- finalized shifts
-
-DELIMITER $$
-
-DROP TRIGGER IF EXISTS trg_shift_before_insert $$
-CREATE TRIGGER trg_shift_before_insert
-BEFORE INSERT ON shift
-FOR EACH ROW
-BEGIN
-    IF NEW.is_finalized = 1 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Shift insert failed: cannot insert a finalized shift directly';
-    END IF;
-END$$
-
-DELIMITER ;
-
 
 DELIMITER $$
 
