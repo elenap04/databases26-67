@@ -1,0 +1,10 @@
++-----------+------------+--------------+----------------+------------------+---------------------+----------------------+
+| doctor_id | first_name | last_name    | specialization | grade            | had_shift_this_year | surgeries_as_primary |
++-----------+------------+--------------+----------------+------------------+---------------------+----------------------+
+|        16 | Nikos      | Apostolou    | Cardiology     | Senior Attending | No                  |                    0 |
+|        61 | Markos     | Efthimiou    | Cardiology     | Resident         | No                  |                    0 |
+|        31 | Spyros     | Nikos        | Cardiology     | Senior Attending | No                  |                    0 |
+|         1 | Nikolaos   | Papadopoulos | Cardiology     | Director         | No                  |                    0 |
+|        76 | Fotis      | Zacharias    | Cardiology     | Resident         | No                  |                    0 |
+|        46 | Thanos     | Zikos        | Cardiology     | Junior Attending | No                  |                    0 |
++-----------+------------+--------------+----------------+------------------+---------------------+----------------------+

@@ -1,0 +1,145 @@
++-----------+-------------------+------------------+-----------------+---------------+-----------------------+----------------------+------------------+
+| doctor_id | doctor_first_name | doctor_last_name | hierarchy_level | supervisor_id | supervisor_first_name | supervisor_last_name | supervisor_grade |
++-----------+-------------------+------------------+-----------------+---------------+-----------------------+----------------------+------------------+
+|         1 | Nikolaos          | Papadopoulos     |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         2 | Maria             | Konstantinou     |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         3 | Georgios          | Dimitriou        |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         4 | Eleni             | Papageorgiou     |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         5 | Christos          | Makris           |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         6 | Anna              | Karagianni       |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         7 | Panagiotis        | Alexiou          |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         8 | Sophia            | Vasileiou        |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|         9 | Dimitrios         | Nikolaou         |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        10 | Ioanna            | Georgiou         |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        11 | Stelios           | Kanakis          |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        12 | Fani              | Saridou          |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        13 | Kostas            | Lekkas           |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        14 | Rena              | Pavlou           |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        15 | Tasos             | Komianos         |               0 |          NULL | NULL                  | NULL                 | NULL             |
+|        16 | Nikos             | Apostolou        |               1 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        17 | Zafira            | Drakaki          |               1 |             2 | Maria                 | Konstantinou         | Director         |
+|        18 | Kostas            | Petrakis         |               1 |             3 | Georgios              | Dimitriou            | Director         |
+|        19 | Aliki             | Stavrou          |               1 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        20 | Makis             | Louloudis        |               1 |             5 | Christos              | Makris               | Director         |
+|        21 | Alexandros        | Petridis         |               1 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        22 | Vasiliki          | Lamprinou        |               1 |             2 | Maria                 | Konstantinou         | Director         |
+|        23 | Manolis           | Galanis          |               1 |             3 | Georgios              | Dimitriou            | Director         |
+|        24 | Elena             | Tzimou           |               1 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        25 | Petros            | Mavros           |               1 |             5 | Christos              | Makris               | Director         |
+|        26 | Chrysa            | Koutsi           |               1 |             6 | Anna                  | Karagianni           | Director         |
+|        27 | Vasilis           | Stamatis         |               1 |             7 | Panagiotis            | Alexiou              | Director         |
+|        28 | Iro               | Papadaki         |               1 |             8 | Sophia                | Vasileiou            | Director         |
+|        29 | Thanasis          | Lyris            |               1 |             9 | Dimitrios             | Nikolaou             | Director         |
+|        30 | Dimitra           | Vrettos          |               1 |            10 | Ioanna                | Georgiou             | Director         |
+|        31 | Spyros            | Nikos            |               1 |            11 | Stelios               | Kanakis              | Director         |
+|        32 | Fotini            | Karali           |               1 |            12 | Fani                  | Saridou              | Director         |
+|        33 | Manolis           | Remos            |               1 |            13 | Kostas                | Lekkas               | Director         |
+|        34 | Stella            | Papou            |               1 |            14 | Rena                  | Pavlou               | Director         |
+|        35 | Andreas           | Chatzis          |               1 |            15 | Tasos                 | Komianos             | Director         |
+|        36 | Niki              | Dimos            |               1 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        37 | Lefteris          | Koumis           |               1 |             2 | Maria                 | Konstantinou         | Director         |
+|        38 | Popi              | Alexis           |               1 |             3 | Georgios              | Dimitriou            | Director         |
+|        39 | Takis             | Manos            |               1 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        40 | Zoe               | Karas            |               1 |             5 | Christos              | Makris               | Director         |
+|        41 | Ilias             | Floris           |               1 |            21 | Alexandros            | Petridis             | Senior Attending |
+|        41 | Ilias             | Floris           |               2 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        42 | Maro              | Simos            |               1 |            22 | Vasiliki              | Lamprinou            | Senior Attending |
+|        42 | Maro              | Simos            |               2 |             2 | Maria                 | Konstantinou         | Director         |
+|        43 | Dimos             | Fekas            |               1 |            23 | Manolis               | Galanis              | Senior Attending |
+|        43 | Dimos             | Fekas            |               2 |             3 | Georgios              | Dimitriou            | Director         |
+|        44 | Rena              | Tolis            |               1 |            24 | Elena                 | Tzimou               | Senior Attending |
+|        44 | Rena              | Tolis            |               2 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        45 | Fanis             | Makris           |               1 |            25 | Petros                | Mavros               | Senior Attending |
+|        45 | Fanis             | Makris           |               2 |             5 | Christos              | Makris               | Director         |
+|        46 | Thanos            | Zikos            |               1 |            26 | Chrysa                | Koutsi               | Senior Attending |
+|        46 | Thanos            | Zikos            |               2 |             6 | Anna                  | Karagianni           | Director         |
+|        47 | Evita             | Lekkas           |               1 |            27 | Vasilis               | Stamatis             | Senior Attending |
+|        47 | Evita             | Lekkas           |               2 |             7 | Panagiotis            | Alexiou              | Director         |
+|        48 | Nektarios         | Panos            |               1 |            28 | Iro                   | Papadaki             | Senior Attending |
+|        48 | Nektarios         | Panos            |               2 |             8 | Sophia                | Vasileiou            | Director         |
+|        49 | Giota             | Sarris           |               1 |            29 | Thanasis              | Lyris                | Senior Attending |
+|        49 | Giota             | Sarris           |               2 |             9 | Dimitrios             | Nikolaou             | Director         |
+|        50 | Yannis            | Beis             |               1 |            30 | Dimitra               | Vrettos              | Senior Attending |
+|        50 | Yannis            | Beis             |               2 |            10 | Ioanna                | Georgiou             | Director         |
+|        51 | Stelios           | Trovas           |               1 |            31 | Spyros                | Nikos                | Senior Attending |
+|        51 | Stelios           | Trovas           |               2 |            11 | Stelios               | Kanakis              | Director         |
+|        52 | Agni              | Pallis           |               1 |            32 | Fotini                | Karali               | Senior Attending |
+|        52 | Agni              | Pallis           |               2 |            12 | Fani                  | Saridou              | Director         |
+|        53 | Kostas            | Bardis           |               1 |            33 | Manolis               | Remos                | Senior Attending |
+|        53 | Kostas            | Bardis           |               2 |            13 | Kostas                | Lekkas               | Director         |
+|        54 | Maria             | Sfakianos        |               1 |            34 | Stella                | Papou                | Senior Attending |
+|        54 | Maria             | Sfakianos        |               2 |            14 | Rena                  | Pavlou               | Director         |
+|        55 | Giorgos           | Koukos           |               1 |            35 | Andreas               | Chatzis              | Senior Attending |
+|        55 | Giorgos           | Koukos           |               2 |            15 | Tasos                 | Komianos             | Director         |
+|        56 | Anna              | Drakos           |               1 |            36 | Niki                  | Dimos                | Senior Attending |
+|        56 | Anna              | Drakos           |               2 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        57 | Petros            | Zafeiris         |               1 |            37 | Lefteris              | Koumis               | Senior Attending |
+|        57 | Petros            | Zafeiris         |               2 |             2 | Maria                 | Konstantinou         | Director         |
+|        58 | Chrysa            | Lianos           |               1 |            38 | Popi                  | Alexis               | Senior Attending |
+|        58 | Chrysa            | Lianos           |               2 |             3 | Georgios              | Dimitriou            | Director         |
+|        59 | Vasilis           | Drakakis         |               1 |            39 | Takis                 | Manos                | Senior Attending |
+|        59 | Vasilis           | Drakakis         |               2 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        60 | Fotini            | Alexiou          |               1 |            40 | Zoe                   | Karas                | Senior Attending |
+|        60 | Fotini            | Alexiou          |               2 |             5 | Christos              | Makris               | Director         |
+|        61 | Markos            | Efthimiou        |               1 |            41 | Ilias                 | Floris               | Junior Attending |
+|        61 | Markos            | Efthimiou        |               2 |            21 | Alexandros            | Petridis             | Senior Attending |
+|        61 | Markos            | Efthimiou        |               3 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        62 | Nina              | Christodoulou    |               1 |            42 | Maro                  | Simos                | Junior Attending |
+|        62 | Nina              | Christodoulou    |               2 |            22 | Vasiliki              | Lamprinou            | Senior Attending |
+|        62 | Nina              | Christodoulou    |               3 |             2 | Maria                 | Konstantinou         | Director         |
+|        63 | Orestis           | Kampas           |               1 |            43 | Dimos                 | Fekas                | Junior Attending |
+|        63 | Orestis           | Kampas           |               2 |            23 | Manolis               | Galanis              | Senior Attending |
+|        63 | Orestis           | Kampas           |               3 |             3 | Georgios              | Dimitriou            | Director         |
+|        64 | Rea               | Michailidou      |               1 |            44 | Rena                  | Tolis                | Junior Attending |
+|        64 | Rea               | Michailidou      |               2 |            24 | Elena                 | Tzimou               | Senior Attending |
+|        64 | Rea               | Michailidou      |               3 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        65 | Stathis           | Papagiannakis    |               1 |            45 | Fanis                 | Makris               | Junior Attending |
+|        65 | Stathis           | Papagiannakis    |               2 |            25 | Petros                | Mavros               | Senior Attending |
+|        65 | Stathis           | Papagiannakis    |               3 |             5 | Christos              | Makris               | Director         |
+|        66 | Thaleia           | Karvounis        |               1 |            46 | Thanos                | Zikos                | Junior Attending |
+|        66 | Thaleia           | Karvounis        |               2 |            26 | Chrysa                | Koutsi               | Senior Attending |
+|        66 | Thaleia           | Karvounis        |               3 |             6 | Anna                  | Karagianni           | Director         |
+|        67 | Vaggelis          | Moutsios         |               1 |            47 | Evita                 | Lekkas               | Junior Attending |
+|        67 | Vaggelis          | Moutsios         |               2 |            27 | Vasilis               | Stamatis             | Senior Attending |
+|        67 | Vaggelis          | Moutsios         |               3 |             7 | Panagiotis            | Alexiou              | Director         |
+|        68 | Xenia             | Papadimitriou    |               1 |            48 | Nektarios             | Panos                | Junior Attending |
+|        68 | Xenia             | Papadimitriou    |               2 |            28 | Iro                   | Papadaki             | Senior Attending |
+|        68 | Xenia             | Papadimitriou    |               3 |             8 | Sophia                | Vasileiou            | Director         |
+|        69 | Yiannis           | Liakos           |               1 |            49 | Giota                 | Sarris               | Junior Attending |
+|        69 | Yiannis           | Liakos           |               2 |            29 | Thanasis              | Lyris                | Senior Attending |
+|        69 | Yiannis           | Liakos           |               3 |             9 | Dimitrios             | Nikolaou             | Director         |
+|        70 | Zina              | Papakosta        |               1 |            50 | Yannis                | Beis                 | Junior Attending |
+|        70 | Zina              | Papakosta        |               2 |            30 | Dimitra               | Vrettos              | Senior Attending |
+|        70 | Zina              | Papakosta        |               3 |            10 | Ioanna                | Georgiou             | Director         |
+|        71 | Aggeliki          | Raptou           |               1 |            51 | Stelios               | Trovas               | Junior Attending |
+|        71 | Aggeliki          | Raptou           |               2 |            31 | Spyros                | Nikos                | Senior Attending |
+|        71 | Aggeliki          | Raptou           |               3 |            11 | Stelios               | Kanakis              | Director         |
+|        72 | Babis             | Sideris          |               1 |            52 | Agni                  | Pallis               | Junior Attending |
+|        72 | Babis             | Sideris          |               2 |            32 | Fotini                | Karali               | Senior Attending |
+|        72 | Babis             | Sideris          |               3 |            12 | Fani                  | Saridou              | Director         |
+|        73 | Calliope          | Tsakali          |               1 |            53 | Kostas                | Bardis               | Junior Attending |
+|        73 | Calliope          | Tsakali          |               2 |            33 | Manolis               | Remos                | Senior Attending |
+|        73 | Calliope          | Tsakali          |               3 |            13 | Kostas                | Lekkas               | Director         |
+|        74 | Demos             | Hatzis           |               1 |            54 | Maria                 | Sfakianos            | Junior Attending |
+|        74 | Demos             | Hatzis           |               2 |            34 | Stella                | Papou                | Senior Attending |
+|        74 | Demos             | Hatzis           |               3 |            14 | Rena                  | Pavlou               | Director         |
+|        75 | Eleftheria        | Ioannou          |               1 |            55 | Giorgos               | Koukos               | Junior Attending |
+|        75 | Eleftheria        | Ioannou          |               2 |            35 | Andreas               | Chatzis              | Senior Attending |
+|        75 | Eleftheria        | Ioannou          |               3 |            15 | Tasos                 | Komianos             | Director         |
+|        76 | Fotis             | Zacharias        |               1 |            56 | Anna                  | Drakos               | Junior Attending |
+|        76 | Fotis             | Zacharias        |               2 |            36 | Niki                  | Dimos                | Senior Attending |
+|        76 | Fotis             | Zacharias        |               3 |             1 | Nikolaos              | Papadopoulos         | Director         |
+|        77 | Gina              | Anastasiou       |               1 |            57 | Petros                | Zafeiris             | Junior Attending |
+|        77 | Gina              | Anastasiou       |               2 |            37 | Lefteris              | Koumis               | Senior Attending |
+|        77 | Gina              | Anastasiou       |               3 |             2 | Maria                 | Konstantinou         | Director         |
+|        78 | Harris            | Baltas           |               1 |            58 | Chrysa                | Lianos               | Junior Attending |
+|        78 | Harris            | Baltas           |               2 |            38 | Popi                  | Alexis               | Senior Attending |
+|        78 | Harris            | Baltas           |               3 |             3 | Georgios              | Dimitriou            | Director         |
+|        79 | Irini             | Gatsi            |               1 |            59 | Vasilis               | Drakakis             | Junior Attending |
+|        79 | Irini             | Gatsi            |               2 |            39 | Takis                 | Manos                | Senior Attending |
+|        79 | Irini             | Gatsi            |               3 |             4 | Eleni                 | Papageorgiou         | Director         |
+|        80 | Jason             | Delis            |               1 |            60 | Fotini                | Alexiou              | Junior Attending |
+|        80 | Jason             | Delis            |               2 |            40 | Zoe                   | Karas                | Senior Attending |
+|        80 | Jason             | Delis            |               3 |             5 | Christos              | Makris               | Director         |
+|       200 | Ioannis           | Papadimitriou    |               0 |          NULL | NULL                  | NULL                 | NULL             |
++-----------+-------------------+------------------+-----------------+---------------+-----------------------+----------------------+------------------+

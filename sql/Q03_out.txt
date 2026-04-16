@@ -1,0 +1,9 @@
++------------+------------+--------------+---------------+-----------------+------------------------+----------------------------+
+| patient_id | first_name | last_name    | department_id | department_name | hospitalizations_count | total_hospitalization_cost |
++------------+------------+--------------+---------------+-----------------+------------------------+----------------------------+
+|          2 | Elena      | Georgiou     |             1 | Cardiology      |                      8 |                   52674.00 |
+|          1 | Alexandros | Papadopoulos |             1 | Cardiology      |                      5 |                   41900.00 |
+|         13 | Yannis     | Pallis       |             2 | General Surgery |                      5 |                   20644.00 |
+|         12 | Niki       | Trovas       |             2 | General Surgery |                      5 |                   20507.00 |
+|         10 | Chrysa     | Sarris       |             2 | General Surgery |                      5 |                   20233.00 |
++------------+------------+--------------+---------------+-----------------+------------------------+----------------------------+

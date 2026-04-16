@@ -1,0 +1,272 @@
++----------------------+---------------------+---------------------+------------+----------------+--------------------+----------------------+
+| department           | shift_start         | shift_end           | shift_type | staff_category | subcategory        | assigned_staff_count |
++----------------------+---------------------+---------------------+------------+----------------+--------------------+----------------------+
+| Cardiology           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Cardiology           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Head Nurse         |                    4 |
+| Cardiology           | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Cardiology           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Head Nurse         |                    4 |
+| Cardiology           | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Cardiology           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Head Nurse         |                    4 |
+| Cardiology           | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Cardiology           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Cardiology         |                    3 |
+| Cardiology           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Head Nurse         |                    4 |
+| Cardiology           | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Cardiology         |                    3 |
+| Dermatology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Dermatology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Dermatology        |                    3 |
+| Dermatology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Dermatology          | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Dermatology        |                    2 |
+| Dermatology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Dermatology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Dermatology        |                    3 |
+| Dermatology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Dermatology          | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Dermatology        |                    2 |
+| Dermatology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Dermatology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Dermatology        |                    3 |
+| Dermatology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Dermatology          | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Dermatology        |                    2 |
+| Dermatology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Dermatology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Dermatology        |                    3 |
+| Dermatology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Dermatology          | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Dermatology        |                    2 |
+| Emergency Department | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Emergency Department | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Emergency Department | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Emergency Department | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Emergency Department | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Emergency Department | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Emergency Department | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Emergency Department | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Emergency Department | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Emergency Department | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Emergency Department | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Emergency Medicine |                    3 |
+| Emergency Department | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Emergency Department | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Emergency Department | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Emergency Medicine |                    3 |
+| Gastroenterology     | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| Gastroenterology     | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Gastroenterology   |                    3 |
+| Gastroenterology     | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Gastroenterology     | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Gastroenterology     | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Gastroenterology   |                    2 |
+| Gastroenterology     | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| Gastroenterology     | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Gastroenterology   |                    3 |
+| Gastroenterology     | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Gastroenterology     | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Gastroenterology     | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Gastroenterology   |                    2 |
+| Gastroenterology     | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| Gastroenterology     | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Gastroenterology   |                    3 |
+| Gastroenterology     | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Gastroenterology     | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Gastroenterology     | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Gastroenterology   |                    2 |
+| Gastroenterology     | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| Gastroenterology     | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Gastroenterology   |                    3 |
+| Gastroenterology     | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Gastroenterology     | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Gastroenterology     | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Gastroenterology   |                    2 |
+| General Surgery      | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| General Surgery      | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| General Surgery      | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| General Surgery      | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| General Surgery      | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| General Surgery      | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| General Surgery      | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| General Surgery      | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| General Surgery      | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| General Surgery      | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| General Surgery      | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | General Surgery    |                    3 |
+| General Surgery      | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| General Surgery      | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| General Surgery      | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | General Surgery    |                    3 |
+| ICU                  | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| ICU                  | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | ICU/Critical Care  |                    3 |
+| ICU                  | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| ICU                  | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | ICU/Critical Care  |                    2 |
+| ICU                  | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| ICU                  | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | ICU/Critical Care  |                    3 |
+| ICU                  | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| ICU                  | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | ICU/Critical Care  |                    2 |
+| ICU                  | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| ICU                  | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | ICU/Critical Care  |                    3 |
+| ICU                  | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| ICU                  | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | ICU/Critical Care  |                    2 |
+| ICU                  | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Receptionist       |                    2 |
+| ICU                  | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | ICU/Critical Care  |                    3 |
+| ICU                  | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| ICU                  | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | ICU/Critical Care  |                    2 |
+| Internal Medicine    | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Internal Medicine    | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Internal Medicine    | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Internal Medicine    | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Internal Medicine    | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Internal Medicine    | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Internal Medicine    | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Internal Medicine    | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Internal Medicine    | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Internal Medicine    | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Internal Medicine    | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Internal Medicine  |                    3 |
+| Internal Medicine    | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Internal Medicine    | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Internal Medicine    | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Internal Medicine  |                    3 |
+| Neurology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Neurology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Neurology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Neurology            | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Neurology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Neurology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Neurology            | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Neurology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Neurology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Neurology            | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Neurology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Neurology          |                    3 |
+| Neurology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Neurology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Neurology            | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Neurology          |                    3 |
+| Oncology             | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Oncology             | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Oncology           |                    3 |
+| Oncology             | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Oncology             | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Oncology           |                    2 |
+| Oncology             | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Oncology             | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Oncology           |                    3 |
+| Oncology             | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Oncology             | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Oncology           |                    2 |
+| Oncology             | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Oncology             | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Oncology           |                    3 |
+| Oncology             | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Oncology             | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Oncology           |                    2 |
+| Oncology             | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Oncology             | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Oncology           |                    3 |
+| Oncology             | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Oncology             | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Oncology           |                    2 |
+| Orthopedics          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Orthopedics          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Orthopedics          | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Orthopedics          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Orthopedics          | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Orthopedics          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Orthopedics          | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Orthopedics          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Orthopedics        |                    3 |
+| Orthopedics          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Orthopedics          | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Orthopedics        |                    3 |
+| Pediatrics           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Pediatrics           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Pediatrics         |                    3 |
+| Pediatrics           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Pediatrics           | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Pediatrics         |                    2 |
+| Pediatrics           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Pediatrics           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Pediatrics         |                    3 |
+| Pediatrics           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Pediatrics           | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Pediatrics         |                    2 |
+| Pediatrics           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Pediatrics           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Pediatrics         |                    3 |
+| Pediatrics           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Pediatrics           | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Pediatrics         |                    2 |
+| Pediatrics           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Secretary          |                    2 |
+| Pediatrics           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Pediatrics         |                    3 |
+| Pediatrics           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Pediatrics           | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Pediatrics         |                    2 |
+| Psychiatry           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Psychiatry           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Psychiatry         |                    3 |
+| Psychiatry           | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Psychiatry           | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Psychiatry         |                    2 |
+| Psychiatry           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Psychiatry           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Psychiatry         |                    3 |
+| Psychiatry           | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Psychiatry           | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Psychiatry         |                    2 |
+| Psychiatry           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Psychiatry           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Psychiatry         |                    3 |
+| Psychiatry           | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Psychiatry           | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Psychiatry         |                    2 |
+| Psychiatry           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Psychiatry           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Psychiatry         |                    3 |
+| Psychiatry           | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Psychiatry           | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Psychiatry         |                    2 |
+| Pulmonology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Pulmonology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Pulmonology        |                    3 |
+| Pulmonology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Pulmonology          | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Pulmonology          | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Pulmonology        |                    2 |
+| Pulmonology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Pulmonology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Pulmonology        |                    3 |
+| Pulmonology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Pulmonology          | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Pulmonology          | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Pulmonology        |                    2 |
+| Pulmonology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Pulmonology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Pulmonology        |                    3 |
+| Pulmonology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Pulmonology          | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Pulmonology          | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Pulmonology        |                    2 |
+| Pulmonology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Coordinator        |                    2 |
+| Pulmonology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Pulmonology        |                    3 |
+| Pulmonology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Pulmonology          | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Pulmonology          | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Pulmonology        |                    2 |
+| Radiology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Radiology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Radiology          |                    3 |
+| Radiology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Radiology            | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Radiology            | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Radiology          |                    2 |
+| Radiology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Radiology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Radiology          |                    3 |
+| Radiology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Radiology            | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Radiology            | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Radiology          |                    2 |
+| Radiology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Radiology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Radiology          |                    3 |
+| Radiology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Radiology            | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Radiology            | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Radiology          |                    2 |
+| Radiology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | Billing Clerk      |                    2 |
+| Radiology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Radiology          |                    3 |
+| Radiology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    3 |
+| Radiology            | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nursing Assistant  |                    1 |
+| Radiology            | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Radiology          |                    2 |
+| Urology              | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Urology              | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Doctor         | Urology            |                    3 |
+| Urology              | 2025-01-06 07:00:00 | 2025-01-06 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Urology              | 2025-01-06 15:00:00 | 2025-01-06 23:00:00 | Afternoon  | Doctor         | Urology            |                    2 |
+| Urology              | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Urology              | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Doctor         | Urology            |                    3 |
+| Urology              | 2025-01-08 07:00:00 | 2025-01-08 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Urology              | 2025-01-08 15:00:00 | 2025-01-08 23:00:00 | Afternoon  | Doctor         | Urology            |                    2 |
+| Urology              | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Urology              | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Doctor         | Urology            |                    3 |
+| Urology              | 2025-01-10 07:00:00 | 2025-01-10 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Urology              | 2025-01-10 15:00:00 | 2025-01-10 23:00:00 | Afternoon  | Doctor         | Urology            |                    2 |
+| Urology              | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Administration | HR Manager         |                    2 |
+| Urology              | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Doctor         | Urology            |                    3 |
+| Urology              | 2025-01-12 07:00:00 | 2025-01-12 15:00:00 | Morning    | Nurse          | Nurse              |                    4 |
+| Urology              | 2025-01-12 15:00:00 | 2025-01-12 23:00:00 | Afternoon  | Doctor         | Urology            |                    2 |
++----------------------+---------------------+---------------------+------------+----------------+--------------------+----------------------+

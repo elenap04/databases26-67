@@ -1,0 +1,16 @@
++----------+------------+---------------+----------------+
+| staff_id | first_name | last_name     | staff_type     |
++----------+------------+---------------+----------------+
+|      156 | Dimitra    | Kontou        | Administration |
+|      141 | Theodoros  | Manos         | Administration |
+|       16 | Nikos      | Apostolou     | Doctor         |
+|       61 | Markos     | Efthimiou     | Doctor         |
+|       31 | Spyros     | Nikos         | Doctor         |
+|        1 | Nikolaos   | Papadopoulos  | Doctor         |
+|       76 | Fotis      | Zacharias     | Doctor         |
+|       46 | Thanos     | Zikos         | Doctor         |
+|       81 | Vasiliki   | Alexiou       | Nurse          |
+|      126 | Kyriaki    | Christodoulou | Nurse          |
+|       96 | Stelios    | Lamprou       | Nurse          |
+|      111 | Fotini     | Raptou        | Nurse          |
++----------+------------+---------------+----------------+

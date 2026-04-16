@@ -1,0 +1,7 @@
++---------------+--------------------+------------+
+| substance_1   | substance_2        | pair_count |
++---------------+--------------------+------------+
+| Abacavir      | Lamivudine         |         29 |
+| Macrogol 3350 | Potassium Chloride |          4 |
+| Macrogol 3350 | Sodium Chloride    |          4 |
++---------------+--------------------+------------+

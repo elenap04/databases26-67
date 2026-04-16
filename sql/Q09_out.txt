@@ -1,0 +1,40 @@
++------------+------------+--------------+------------+
+| patient_id | first_name | last_name    | total_days |
++------------+------------+--------------+------------+
+|         14 | Lena       | Bardis       |         34 |
+|         11 | Michalis   | Beis         |         34 |
+|         13 | Yannis     | Pallis       |         34 |
+|         10 | Chrysa     | Sarris       |         34 |
+|         12 | Niki       | Trovas       |         34 |
+|         15 | Lefteris   | Zikos        |         34 |
+|         85 | Giorgos    | Alexiou      |         25 |
+|        133 | Yannis     | Athanasiadis |         25 |
+|        122 | Elena      | Bardis       |         25 |
+|         68 | Ioanna     | Bardis       |         25 |
+|         95 | Lefteris   | Bardis       |         25 |
+|         81 | Alexandros | Dimitriou    |         25 |
+|        108 | Ioanna     | Dimitriou    |         25 |
+|        135 | Lefteris   | Dimitriou    |         25 |
+|         72 | Niki       | Floris       |         25 |
+|        110 | Chrysa     | Georgiou     |         25 |
+|         83 | Kostas     | Georgiou     |         25 |
+|        137 | Makis      | Georgiou     |         25 |
+|        134 | Lena       | Konstantinou |         25 |
+|        107 | Manolis    | Konstantinou |         25 |
+|         70 | Chrysa     | Lekkas       |         25 |
+|        124 | Eleni      | Lekkas       |         25 |
+|         97 | Makis      | Lekkas       |         25 |
+|         84 | Eleni      | Nikolaou     |         25 |
+|        111 | Michalis   | Nikolaou     |         25 |
+|        121 | Alexandros | Pallis       |         25 |
+|         94 | Lena       | Pallis       |         25 |
+|         71 | Michalis   | Panos        |         25 |
+|         98 | Olga       | Panos        |         25 |
+|         82 | Elena      | Papadopoulos |         25 |
+|        136 | Fani       | Papadopoulos |         25 |
+|        109 | Vasilis    | Papadopoulos |         25 |
+|        120 | Irini      | Trovas       |         25 |
+|         96 | Fani       | Zikos        |         25 |
+|        123 | Kostas     | Zikos        |         25 |
+|         69 | Vasilis    | Zikos        |         25 |
++------------+------------+--------------+------------+
