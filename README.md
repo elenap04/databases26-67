@@ -111,10 +111,14 @@ API_URL=http://localhost:3000
 
 ### Βήμα 3 - Φόρτωση Δεδομένων
 
+**Windows (MySQL Command Line Client):**
+```sql
+SOURCE C:/path/to/ygeiopolis/sql/loadl.sql;
+```
+
+**Linux:**
 ```bash
-cd sql
-pip install mysql-connector-python python-dotenv
-python load_final.py --password yourpassword
+mysql -u root -p < sql/load.sql
 ```
 
 ---
