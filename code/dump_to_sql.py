@@ -1127,7 +1127,7 @@ def main():
     parser.add_argument('--user',     default=os.getenv('DB_USER',     'root'))
     parser.add_argument('--password', default=os.getenv('DB_PASSWORD', ''))
     parser.add_argument('--port',     type=int, default=int(os.getenv('DB_PORT', 3306)))
-    parser.add_argument('--data-dir', default=os.getenv('DATA_DIR',    '../data'))
+    parser.add_argument('--data-dir', default=os.getenv('DATA_DIR',    './data'))
     parser.add_argument('--skip-csv', action='store_true')
     parser.add_argument('--output',   default='../sql/load.sql',
                         help='Path for the generated SQL file (default: ../sql/load.sql)')
