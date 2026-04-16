@@ -695,7 +695,7 @@ def load_q_specific_data(cursor, ken_rows):
             tid += 1; hid += 1
 
     # Q14: 6 ICD codes x 5 hosps x 2 years
-    target_codes = ['I20','I46','K35','I48','G40','J18']
+    """target_codes = ['I20','I46','K35','I48','G40','J18']
     dis_map      = {'I20':'I20','I46':'I46','K35':'K35.8','I48':'I48','G40':'G40.9','J18':'J18'}
     for code in target_codes:
         for year in [2024, 2025]:
@@ -718,8 +718,35 @@ def load_q_specific_data(cursor, ken_rows):
                 if ken_rows:
                     q14_ken.append(f"INSERT IGNORE INTO `assigned_ken` (`hospitalization_id`,`KEN_code`) VALUES ({hid},'{ken_rows[hid%len(ken_rows)]}')")
                 slot_dt = dis_dt + timedelta(days=2)
+                tid += 1; hid += 1"""
+    # Q14: 6 ICD codes x 5 hosps x 2 years
+    target_codes = ['I20','I46','K35','I48','G40','J18']
+    dis_map      = {'I20':'I20','I46':'I46','K35':'K35.8','I48':'I48','G40':'G40.9','J18':'J18'}
+    cutoff       = datetime(2026, 4, 14)
+    for code in target_codes:
+        for year in [2024, 2025, 2026]:    
+            slot_dt = datetime(year, 1, 1)
+            for j in range(5):
+                pid    = (tid % 150) + 50
+                arr_dt = slot_dt
+                srv_dt = arr_dt + timedelta(minutes=30)
+                adm_dt = srv_dt + timedelta(hours=1)
+                dis_dt = adm_dt + timedelta(days=25)
+                if dis_dt > cutoff:
+                    break
+                nurse  = er_nurses[tid % 3]
+                s = [(j+2)%5+1,(j+3)%5+1,(j+4)%5+1,(j+1)%5+1,j%5+1]
+                q14_triage.append(f"INSERT IGNORE INTO `triage_entry` (`id`,`urg_level`,`arrival_time`,`department_id`,`nurse_id`,`patient_id`,`service_time`) VALUES ({tid},2,'{arr_dt.strftime('%Y-%m-%d %H:%M:%S')}',11,{nurse},{pid},'{srv_dt.strftime('%Y-%m-%d %H:%M:%S')}')")
+                q14_hosp.append(f"INSERT IGNORE INTO `hospitalization` (`id`,`admission_date`,`discharge_date`,`total_cost`,`triage_entry_id`,`patient_id`,`bed_no`,`bed_dept_id`) VALUES ({hid},'{adm_dt.strftime('%Y-%m-%d %H:%M:%S')}','{dis_dt.strftime('%Y-%m-%d %H:%M:%S')}',4500,{tid},{pid},4,3)")
+                q14_diag += [
+                    f"INSERT IGNORE INTO `admission_diag` (`hospitalization_id`,`hosp_entry_code`) VALUES ({hid},'{code}')",
+                    f"INSERT IGNORE INTO `discharge_diag` (`hospitalization_id`,`hosp_entry_code`) VALUES ({hid},'{dis_map[code]}')",
+                ]
+                q14_eval.append(f"INSERT IGNORE INTO `evaluation` (`qual_med_care`,`qual_nurse_care`,`cleanness`,`food`,`tot_experience`,`hospitalization_id`) VALUES ({s[0]},{s[1]},{s[2]},{s[3]},{s[4]},{hid})")
+                if ken_rows:
+                    q14_ken.append(f"INSERT IGNORE INTO `assigned_ken` (`hospitalization_id`,`KEN_code`) VALUES ({hid},'{ken_rows[hid%len(ken_rows)]}')")
+                slot_dt = dis_dt + timedelta(days=2)
                 tid += 1; hid += 1
-
     _run(cursor, qs)
     _run(cursor, q14_triage)
     _run(cursor, q14_hosp)
@@ -878,9 +905,13 @@ def load_clinical_data(cursor, med_ids, mp_a, mp_b):
     _run(cursor, surg_stmts)
 
     # Extra surgeries for Q11: doctor 21 gets 9 more using Q14 hosps (days=25 window)
+
     cursor.execute("""
         SELECT id, patient_id, admission_date, discharge_date FROM hospitalization
-        WHERE id BETWEEN 661 AND 720 AND discharge_date IS NOT NULL ORDER BY id LIMIT 12
+        WHERE YEAR(admission_date) = 2026
+        AND discharge_date IS NOT NULL
+        ORDER BY id
+        LIMIT 12
     """)
     extra_hosp_rows = cursor.fetchall()
 
@@ -1099,7 +1130,7 @@ def main():
     parser.add_argument('--data-dir', default=os.getenv('DATA_DIR',    '../data'))
     parser.add_argument('--skip-csv', action='store_true')
     parser.add_argument('--output',   default='../sql/load.sql',
-                        help='Path for the generated SQL file (default:../sql/load.sql)')
+                        help='Path for the generated SQL file (default: ../sql/load.sql)')
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
