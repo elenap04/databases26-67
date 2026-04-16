@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Υγειόπολης — Ερωτήματα</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <img src="./logo.png" alt="Logo">
+        </div>
+        <div class="brand-text">
+            <span class="brand-name">Υγειόπολις</span>
+            <span class="brand-sub">Σύστημα Διαχείρισης</span>
+        </div>
+    </div>
+   <nav class="sidebar-nav">
+    <a href="index.html"            class="nav-item">⬛ Dashboard</a>
+    <div class="nav-section-label">Επιχειρησιακά</div>
+    <a href="triage.html"           class="nav-item">🚨 Διαλογή</a>
+    <a href="shifts.html"           class="nav-item">📅 Βάρδιες</a>
+    <a href="surgeries.html" class="nav-item">🔪 Χειρουργεία</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+    <div class="nav-section-label" style="margin-top:8px">Διαχείριση</div>
+    <a href="patients.html"         class="nav-item">👤 Ασθενείς</a>
+    <a href="prescriptions.html"    class="nav-item">💊 Συνταγογράφηση</a>
+    <a href="hospitalizations.html" class="nav-item">🛏 Νοσηλείες</a>
+    <a href="staff.html"            class="nav-item">👥 Προσωπικό</a>
+    <a href="absences.html"         class="nav-item">🏖 Απουσίες</a>
+    <a href="departments.html"      class="nav-item">🏥 Τμήματα</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+
+    <div class="nav-section-label" style="margin-top:8px">Αναλύσεις</div>
+    <a href="queries.html"          class="nav-item active">🔍 Ερωτήματα</a>
+</nav>
+    <div class="sidebar-footer">
+        <div class="sidebar-time" id="sidebar-time"></div>
+        <div class="sidebar-date" id="sidebar-date"></div>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="topbar">
+        <div class="topbar-left">
+            <h1 class="page-title">Ερωτήματα</h1>
+            <span class="page-subtitle">Εκτέλεση Αναλυτικών Ερωτημάτων Q1–Q15</span>
+        </div>
+    </header>
+
+    <div style="display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start">
+
+        <!-- QUERY LIST -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Λίστα Ερωτημάτων</h2>
+            </div>
+            <div class="card-body" style="padding:8px">
+                <div id="query-list"></div>
+            </div>
+        </div>
+
+        <!-- QUERY RUNNER -->
+        <div>
+            <div class="card" id="query-panel" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title" id="query-title">—</h2>
+                        <div style="font-size:12px;color:var(--text-secondary);margin-top:2px" id="query-desc"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="runQuery()">▶ Εκτέλεση</button>
+                </div>
+                <div class="card-body">
+                    <div id="query-params"></div>
+                </div>
+            </div>
+
+            <div class="card" id="results-panel" style="margin-top:20px;display:none">
+                <div class="card-header">
+                    <h2 class="card-title">Αποτελέσματα</h2>
+                    <span id="results-count" style="font-size:12px;color:var(--text-secondary)"></span>
+                </div>
+                <div class="card-body" style="padding:0;overflow-x:auto">
+                    <div id="query-results"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/queries.js"></script>
+<script>
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('sidebar-time').textContent =
+            now.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('sidebar-date').textContent =
+            now.toLocaleDateString('el-GR', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+</body>
+</html>

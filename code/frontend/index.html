@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Υγειόπολις - Σύστημα Διαχείρισης</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <img src="./logo.png" alt="Logo">
+        </div>
+        <div class="brand-text">
+            <span class="brand-name">Υγειόπολις</span>
+            <span class="brand-sub">Σύστημα Διαχείρισης</span>
+        </div>
+    </div>
+
+   <nav class="sidebar-nav">
+    <a href="index.html"            class="nav-item active">⬛ Dashboard</a>
+    <div class="nav-section-label">Επιχειρησιακά</div>
+    <a href="triage.html"           class="nav-item">🚨 Διαλογή</a>
+    <a href="shifts.html"           class="nav-item">📅 Βάρδιες</a>
+    <a href="surgeries.html" class="nav-item">🔪 Χειρουργεία</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+    <div class="nav-section-label" style="margin-top:8px">Διαχείριση</div>
+    <a href="patients.html"         class="nav-item">👤 Ασθενείς</a>
+    <a href="prescriptions.html"    class="nav-item">💊 Συνταγογράφηση</a>
+    <a href="hospitalizations.html" class="nav-item">🛏 Νοσηλείες</a>
+    <a href="staff.html"            class="nav-item">👥 Προσωπικό</a>
+    <a href="absences.html"         class="nav-item">🏖 Απουσίες</a>
+    <a href="departments.html"      class="nav-item">🏥 Τμήματα</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+
+    <div class="nav-section-label" style="margin-top:8px">Αναλύσεις</div>
+    <a href="queries.html"          class="nav-item">🔍 Ερωτήματα</a>
+</nav>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-time" id="sidebar-time"></div>
+        <div class="sidebar-date" id="sidebar-date"></div>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <h1 class="page-title">Dashboard</h1>
+            <span class="page-subtitle">Επισκόπηση Νοσοκομείου</span>
+        </div>
+    </header>
+
+    <!-- STATS GRID -->
+    <section class="stats-grid" id="stats-grid">
+        <div class="stat-card stat-blue">
+            <div class="stat-icon">👤</div>
+            <div class="stat-info">
+                <div class="stat-value" id="total-patients">—</div>
+                <div class="stat-label">Ασθενείς</div>
+            </div>
+        </div>
+        <div class="stat-card stat-teal">
+            <div class="stat-icon">🩺</div>
+            <div class="stat-info">
+                <div class="stat-value" id="total-doctors">—</div>
+                <div class="stat-label">Ιατροί</div>
+            </div>
+        </div>
+        <div class="stat-card stat-indigo">
+            <div class="stat-icon">💊</div>
+            <div class="stat-info">
+                <div class="stat-value" id="total-nurses">—</div>
+                <div class="stat-label">Νοσηλευτές</div>
+            </div>
+        </div>
+        <div class="stat-card stat-slate">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <div class="stat-value" id="total-admin">—</div>
+                <div class="stat-label">Διοικητικοί</div>
+            </div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-icon">🛏</div>
+            <div class="stat-info">
+                <div class="stat-value" id="active-hosp">—</div>
+                <div class="stat-label">Ενεργές Νοσηλείες</div>
+            </div>
+        </div>
+        <div class="stat-card stat-amber">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-info">
+                <div class="stat-value" id="triage-waiting">—</div>
+                <div class="stat-label">Αναμονή Triage</div>
+            </div>
+        </div>
+        <div class="stat-card stat-rose">
+            <div class="stat-icon">🔪</div>
+            <div class="stat-info">
+                <div class="stat-value" id="surgeries-today">—</div>
+                <div class="stat-label">Χειρουργεία Σήμερα</div>
+            </div>
+        </div>
+        <div class="stat-card stat-emerald">
+            <div class="stat-icon">💶</div>
+            <div class="stat-info">
+                <div class="stat-value" id="monthly-revenue">—</div>
+                <div class="stat-label">Έσοδα Μήνα</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MIDDLE GRID -->
+    <div class="middle-grid">
+
+        <!-- BEDS STATUS -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Κατάσταση Κλινών</h2>
+            </div>
+            <div class="card-body" id="beds-status">
+                <div class="loading">Φόρτωση...</div>
+            </div>
+        </div>
+
+        <!-- TRIAGE QUEUE -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Ουρά Triage</h2>
+            </div>
+            <div class="card-body" id="triage-levels">
+                <div class="loading">Φόρτωση...</div>
+            </div>
+        </div>
+
+        <!-- CURRENT SHIFTS -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Τρέχουσες Βάρδιες</h2>
+            </div>
+            <div class="card-body" id="current-shifts">
+                <div class="loading">Φόρτωση...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DEPARTMENTS TABLE -->
+    <div class="card full-width">
+        <div class="card-header">
+            <h2 class="card-title">Κατάσταση Τμημάτων</h2>
+        </div>
+        <div class="card-body">
+            <table class="table" id="dept-table">
+                <thead>
+                    <tr>
+                        <th>Τμήμα</th>
+                        <th>Σύνολο Κλινών</th>
+                        <th>Διαθέσιμες</th>
+                        <th>Κατειλημμένες</th>
+                        <th>Ενεργές Νοσηλείες</th>
+                        <th>Πληρότητα</th>
+                    </tr>
+                </thead>
+                <tbody id="dept-tbody">
+                    <tr><td colspan="6" class="loading">Φόρτωση...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

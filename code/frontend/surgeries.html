@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Υγειόπολης — Χειρουργεία</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <img src="./logo.png" alt="Logo">
+        </div>
+        <div class="brand-text">
+            <span class="brand-name">Υγειόπολις</span>
+            <span class="brand-sub">Σύστημα Διαχείρισης</span>
+        </div>
+    </div>
+       <nav class="sidebar-nav">
+    <a href="index.html"            class="nav-item">⬛ Dashboard</a>
+    <div class="nav-section-label">Επιχειρησιακά</div>
+    <a href="triage.html"           class="nav-item">🚨 Διαλογή</a>
+    <a href="shifts.html"           class="nav-item">📅 Βάρδιες</a>
+    <a href="surgeries.html" class="nav-item active">🔪 Χειρουργεία</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+    <div class="nav-section-label" style="margin-top:8px">Διαχείριση</div>
+    <a href="patients.html"         class="nav-item">👤 Ασθενείς</a>
+    <a href="prescriptions.html"    class="nav-item">💊 Συνταγογράφηση</a>
+    <a href="hospitalizations.html" class="nav-item">🛏 Νοσηλείες</a>
+    <a href="staff.html"            class="nav-item">👥 Προσωπικό</a>
+    <a href="absences.html"         class="nav-item">🏖 Απουσίες</a>
+    <a href="departments.html"      class="nav-item">🏥 Τμήματα</a>
+    <a href="medical.html" class="nav-item">🧪 Πράξεις & Εξετάσεις</a>
+
+
+    <div class="nav-section-label" style="margin-top:8px">Αναλύσεις</div>
+    <a href="queries.html"          class="nav-item">🔍 Ερωτήματα</a>
+</nav>
+    <div class="sidebar-footer">
+        <div class="sidebar-time" id="sidebar-time"></div>
+        <div class="sidebar-date" id="sidebar-date"></div>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="topbar">
+        <div class="topbar-left">
+            <h1 class="page-title">Χειρουργεία</h1>
+            <span class="page-subtitle">Διαχείριση Χειρουργείων</span>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-outline" onclick="newSurgery(true)"
+                style="margin-right:8px">⚡ Έκτακτο</button>
+            <button class="btn btn-primary" onclick="newSurgery(false)">+ Νέο Χειρουργείο</button>
+        </div>
+    </header>
+
+    <!-- TABS + FILTERS -->
+    <div class="card full-width" style="margin-bottom:20px">
+        <div class="card-body" style="padding:14px 20px">
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                <div class="tabs" style="margin-bottom:0">
+                    <button class="tab active" onclick="switchTab('all')">Όλα</button>
+                    <button class="tab" onclick="switchTab('emergency')">⚡ Έκτακτα</button>
+                    <button class="tab" onclick="switchTab('regular')">📅 Προγραμματισμένα</button>
+                </div>
+                <div id="dept-filter-row" style="display:none;align-items:center;gap:8px">
+                    <label style="font-size:13px;font-weight:500;color:var(--text-secondary);white-space:nowrap">
+                        Τμήμα:
+                    </label>
+                    <select id="dept-filter" class="form-input" style="max-width:250px" onchange="loadSurgeries()">
+                        <option value="">— Όλα —</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card full-width">
+        <div class="card-header">
+            <h2 class="card-title" id="tab-title">Όλα τα Χειρουργεία</h2>
+        </div>
+        <div class="card-body" style="padding:0">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ασθενής</th>
+                        <th>Διαδικασία</th>
+                        <th>Τμήμα</th>
+                        <th>Έναρξη</th>
+                        <th>Διάρκεια</th>
+                        <th>Κόστος</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                </thead>
+                <tbody id="surg-tbody">
+                    <tr><td colspan="8" class="loading">Φόρτωση...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+    <div class="modal" style="max-width:720px">
+        <div class="modal-header">
+            <h3 id="modal-title">—</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/surgeries.js"></script>
+<script>
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('sidebar-time').textContent =
+            now.toLocaleTimeString('el-GR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        document.getElementById('sidebar-date').textContent =
+            now.toLocaleDateString('el-GR', { weekday:'long', day:'numeric', month:'long' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+</body>
+</html>
