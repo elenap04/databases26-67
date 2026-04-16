@@ -1098,8 +1098,8 @@ def main():
     parser.add_argument('--port',     type=int, default=int(os.getenv('DB_PORT', 3306)))
     parser.add_argument('--data-dir', default=os.getenv('DATA_DIR',    '../data'))
     parser.add_argument('--skip-csv', action='store_true')
-    parser.add_argument('--output',   default='load.sql',
-                        help='Path for the generated SQL file (default: load.sql)')
+    parser.add_argument('--output',   default='../sql/load.sql',
+                        help='Path for the generated SQL file (default:../sql/load.sql)')
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
@@ -1117,6 +1117,7 @@ def main():
     _sql_out = open(out_path, 'w', encoding='utf-8')
     _sql_out.write(f"-- Ygeiopolis DB — generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     _sql_out.write(f"-- Load with: mysql -u root -p {DB_NAME} < {out_path.name}\n\n")
+    _sql_out.write("SET NAMES utf8mb4;\n")
     _sql_out.write("SET FOREIGN_KEY_CHECKS=0;\n")
     _sql_out.write("SET UNIQUE_CHECKS=0;\n")
     _sql_out.write("SET autocommit=0;\n\n")
