@@ -5,7 +5,6 @@ Ygeiopolis Hospital DB — Data Loader + SQL Dumper
 
 Usage:
     python dump_to_sql.py --password YOUR_PASS
-    python dump_to_sql.py --password YOUR_PASS --output load.sql --skip-csv
 """
 
 import mysql.connector
