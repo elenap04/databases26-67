@@ -138,7 +138,7 @@ python dump_to_sql.py --password yourpassword
 
 ```bash
 cd backend
-npm install
+npm install express
 node server.js
 ```
 
