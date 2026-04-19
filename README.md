@@ -138,7 +138,7 @@ python dump_to_sql.py --password yourpassword
 
 ```bash
 cd backend
-npm install express
+npm install express cors mongoose dotenv
 node server.js
 ```
 
